@@ -14,6 +14,7 @@ class StartGame:
   
   def playGame(self):
     # while self.playingGame:
+    self.uiInterface.startGame()
     pass
 
 if __name__ == "__main__":
