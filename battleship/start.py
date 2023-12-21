@@ -9,8 +9,8 @@ class StartGame:
   
   def __init__(self,uiInterface, playerName:str) -> None:
     self.uiInterface = uiInteface
-    self.playingGame = True
     self.playerName = playerName
+    self.uiInterface.playerName(playerName)
   
   def playGame(self):
     # while self.playingGame:
