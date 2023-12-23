@@ -11,10 +11,15 @@ class GUI:
   
   def __init__(self) -> None:
     print("Entry on GUI.")
+    self.playerBoats = []
+    self.computerBoats = []
     
   def playerName(self,playerName):
     self.playerName = playerName
-
+    
+    
+    
+  #MAIN MENU 
   def mainMenu(self):
     self.uiInterface.fill((0,0,0))
     self.uiInterface.blit(BACKGROUNDIMAGE,(0,0))
@@ -40,18 +45,109 @@ class GUI:
     self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
     self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
     pygame.display.update() 
-
-  def create_board(self):
-    self.board.boardview()
-    self.createBoatMenu()
     
-  def createBoatMenu(self):
+    
+  #STRATEGY PANEL
+  def strategyPanel(self):
+    self.uiInterface.fill((0,0,0))
+    for event in pygame.event.get():  
+      if event.type == pygame.QUIT:  
+        self.inStrategy = False
+      mousePos = pygame.mouse.get_pos()
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        # QUIT BUTTON
+        if event.button == 1:
+          if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
+            self.inStrategy = False
+            break
+          #START BUTTON
+          if WIDTH/2-100 <= mousePos[0] <= WIDTH/2+28 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16 and self.playerBoard.ones == self.playerBoard.oneNeeded: 
+            self.inStrategy = False
+            self.isPlaying = True
+            break
+          self.rect = self.verifyPositionBoat(mousePos)
+          if self.rect != None:
+            self.playerBoard.boatTaken(self.rect)
+          self.mouseDown = True
+        elif event.button == 3:
+          self.rect = self.verifyPositionBoat(mousePos)
+          if self.rect != None and self.rect.isAdded != True:
+            self.rect.changeAlign()
+          else:
+            self.rect = None
+      if event.type == pygame.MOUSEBUTTONUP:
+        if self.rect != None:
+          self.playerBoard.verifyCoordsinSquare(self.rect)
+        self.mouseDown = False
+        self.rect = None
+      if event.type == pygame.MOUSEMOTION and self.mouseDown and self.rect != None:
+        self.rect.position = mousePos
+    self.create_board()
+    self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
+    self.uiInterface.blit(COPYRIGHT, (20,HEIGHT-20))  
+    self.uiInterface.blit(STRATEGY_PANEL,(WIDTH/2-120,50))
+    if self.playerBoard.ones == self.playerBoard.oneNeeded:
+      self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
+    pygame.display.update() # UPDATE GAME WINDOW
+    
+    
+    
+  def playingPanel(self):
+    self.uiInterface.fill((0,0,0))
+    self.uiInterface.blit(OCEANBACKGROUND,(0,0))
+    
+    for event in pygame.event.get():  
+      if event.type == pygame.QUIT:  
+        self.isOnMenu = False
+        self.inStrategy = False
+        self.isPlaying = False
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        mousePos = pygame.mouse.get_pos()
+        # QUIT BUTTON
+        if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
+          self.isOnMenu = False
+          self.inStrategy = False
+          self.isPlaying = False
+          break
+    self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
+    self.computerBoard.boardPlaying(80,150,COMPUTER_BOARD)
+    self.createBoatsView()
+    self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
+    self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
+    
+    pygame.display.update() #
+    
+    
+  def create_board(self):
+    self.playerBoard.boardview()
     pygame.draw.rect(self.uiInterface,(230,230,230),[0,95,300,500])
-    self.boatBattleship.draw()
-    self.boatCarrier.draw()
-    self.boatDestroyer.draw()
-    self.boatSubmarine.draw()
-    self.boatPatrol.draw()
+    self.createBoatsView()
+    
+  def createBoatsView(self):
+    for each in self.playerBoats:
+      each.draw()
+    for each in self.computerBoats:
+      each.draw()
+    
+  def createBoats(self):
+    self.playerBoard = Board(self.uiInterface)
+    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,(0,0,0),self.uiInterface,self.playerBoard)
+    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,(255,0,102),self.uiInterface,self.playerBoard)
+    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,(100,100,100),self.uiInterface,self.playerBoard)
+    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface,self.playerBoard)
+    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,(51,205,204),self.uiInterface,self.playerBoard) 
+    
+    self.playerBoats = [self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol]
+    
+    self.computerBoard = Board(self.uiInterface)
+    self.computerBoatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,(0,0,0),self.uiInterface,self.computerBoard)
+    self.computerBoatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,(255,0,102),self.uiInterface,self.computerBoard)
+    self.computerBoatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,(100,100,100),self.uiInterface,self.computerBoard)
+    self.computerBoatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface,self.computerBoard)
+    self.computerBoatPatrol = Boat('Patrol',BOAT_PATROL,170,375,(51,205,204),self.uiInterface,self.computerBoard) 
+    
+    #self.computerBoats = [self.computerBoatCarrier,self.computerBoatBattleship,self.computerBoatDestroyer,self.computerBoatSubmarine,self.computerBoatPatrol]
+    
     
   def verifyPositionBoat(self,mousePos):
     rect = None
@@ -87,77 +183,22 @@ class GUI:
         
         
     if self.inStrategy:
-      self.board = Board(self.uiInterface)
-      self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,(0,0,0),self.uiInterface)
-      self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,(255,0,102),self.uiInterface)
-      self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,(100,100,100),self.uiInterface)
-      self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface)
-      self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,(51,205,204),self.uiInterface)    
+      self.createBoats()  
+       
     self.mouseDown = False
-    rect = None
     
-    
+    self.rect = None
+    # STRATEGY PANEL
     while self.inStrategy:
-      self.uiInterface.fill((0,0,0))
-      #self.uiInterface.blit(OCEANBACKGROUND,(0,0))
-      for event in pygame.event.get():  
-        if event.type == pygame.QUIT:  
-          self.inStrategy = False
-        mousePos = pygame.mouse.get_pos()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-          # QUIT BUTTON
-          if event.button == 1:
-            if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
-              self.inStrategy = False
-              break
-            #START BUTTON
-            if WIDTH/2-100 <= mousePos[0] <= WIDTH/2+28 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16 and self.board.ones == self.board.oneNeeded: 
-              self.inStrategy = False
-              self.isPlaying = True
-              break
-            rect = self.verifyPositionBoat(mousePos)
-            if rect != None:
-              self.board.boatTaken(rect)
-            self.mouseDown = True
-          elif event.button == 3:
-            self.verifyPositionBoat(mousePos).changeAlign()
-        if event.type == pygame.MOUSEBUTTONUP:
-          if rect != None:
-            self.board.verifyCoordsinSquare(rect)
-          self.mouseDown = False
-          rect = None
-        if event.type == pygame.MOUSEMOTION and self.mouseDown and rect != None:
-          rect.position = mousePos
-      self.create_board()
-      self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
-      self.uiInterface.blit(COPYRIGHT, (20,HEIGHT-20))  
-      if self.board.ones == self.board.oneNeeded:
-        self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
-      pygame.display.update() # UPDATE GAME WINDOW
+      self.strategyPanel()
       
+    if self.isPlaying:
+      for each in self.playerBoats:
+        each.setSquareSize(SQUARE_SIZE_MINI)
+      for each in self.computerBoats:
+        each.setSquareSize(SQUARE_SIZE_MINI)
       
     while self.isPlaying:
-      self.uiInterface.fill((0,0,0))
-      self.uiInterface.blit(OCEANBACKGROUND,(0,0))
+      self.playingPanel()
       
-      for event in pygame.event.get():  
-        if event.type == pygame.QUIT:  
-          self.isOnMenu = False
-          self.inStrategy = False
-          self.isPlaying = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-          mousePos = pygame.mouse.get_pos()
-          # QUIT BUTTON
-          if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
-            self.isOnMenu = False
-            self.inStrategy = False
-            self.isPlaying = False
-            break
-
-      self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
-      self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
-      
-      pygame.display.update() #
     pygame.quit()
-    
-      

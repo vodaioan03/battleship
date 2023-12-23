@@ -14,12 +14,24 @@ class Board:
     self.ones = 0
       
   def boardview(self):
+    self.board  = [[]]
     for i in range(1,BOARD_COL+1):
-      self.board.append([])
+      self.board.append([[]])
       for z in range(1,BOARD_ROWS+1):
         pygame.draw.rect(self.uiInterface, (0, 0, 255),[(SQUARE_SIZE)*z+340,(SQUARE_SIZE)*i+40,SQUARE_SIZE-1,SQUARE_SIZE-1])
         self.board[i].append(pygame.draw.rect(self.uiInterface,(0,0,0),[(SQUARE_SIZE)*z+340,(SQUARE_SIZE)*i+40,SQUARE_SIZE,SQUARE_SIZE],1))
     pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE+340,SQUARE_SIZE+40,BOARD_COL*SQUARE_SIZE,BOARD_ROWS*SQUARE_SIZE],1)
+    
+  def boardPlaying(self,xAdd,yAdd,text): 
+    
+    self.uiInterface.blit(text,(xAdd+SQUARE_SIZE_MINI+40,yAdd))
+    self.board  = [[]]
+    for i in range(1,BOARD_COL+1):
+      self.board.append([[]])
+      for z in range(1,BOARD_ROWS+1):
+        pygame.draw.rect(self.uiInterface, (0, 0, 255),[(SQUARE_SIZE_MINI)*z+xAdd,(SQUARE_SIZE_MINI)*i+yAdd,SQUARE_SIZE_MINI-1,SQUARE_SIZE_MINI-1])
+        self.board[i].append(pygame.draw.rect(self.uiInterface,(0,0,0),[(SQUARE_SIZE_MINI)*z+xAdd,(SQUARE_SIZE_MINI)*i+yAdd,SQUARE_SIZE_MINI,SQUARE_SIZE_MINI],1))
+    pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE_MINI+xAdd,SQUARE_SIZE_MINI+yAdd,BOARD_COL*SQUARE_SIZE_MINI,BOARD_ROWS*SQUARE_SIZE_MINI],1)
     
   def verifyCoordsinSquare(self,boat:Boat):
     found = False
@@ -29,10 +41,9 @@ class Board:
         if boat.view.colliderect(self.board[i][z]):
           boat.position = (self.board[i][z].x,self.board[i][z].y)
           if self.logicBoard[i][z] == 0:
-            if boat.align == 'Vertical' and i+boat.size < BOARD_COL+1:
+            if boat.align == 'Vertical' and i+boat.size-1 < BOARD_COL+1:
               print("Vertical")
               for k in range(0,boat.size):
-                print(i,z)
                 if self.logicBoard[i+k][z] == 1:
                   error = True
                   found = True
@@ -40,7 +51,8 @@ class Board:
                 self.logicBoard[i+k][z] = 1
                 self.ones += 1
               boat.isAdded = True
-            elif boat.align == 'Horizontal' and z+boat.size < BOARD_ROWS+1:
+              boat.setBoardSquare(i,z)
+            elif boat.align == 'Horizontal' and z+boat.size-1 < BOARD_ROWS+1:
               print("Horizontal")
               for k in range(0,boat.size):
                 if self.logicBoard[i][z+k] == 1:
@@ -50,12 +62,15 @@ class Board:
                 self.logicBoard[i][z+k] = 1
                 self.ones += 1
               boat.isAdded = True
+              boat.setBoardSquare(i,z)
             else:
               boat.position = boat.initialPosition
               boat.isAdded = False
+              boat.setBoardSquare(-1,-1)
           else:
             boat.position = boat.initialPosition
             boat.isAdded = False
+            boat.setBoardSquare(-1,-1)
           found = True
           for k in range(len(self.logicBoard)):
             print(self.logicBoard[k])
@@ -63,12 +78,12 @@ class Board:
       if error:
         boat.position = boat.initialPosition
         boat.isAdded = False
+        boat.setBoardSquare(-1,-1)
       if found:
         break
       
   def boatTaken(self,boat:Boat):
     found = False
-    print(boat.position)
     for i in range(1,BOARD_COL+1):
       for z in range(1,BOARD_ROWS+1):
         if boat.view.colliderect(self.board[i][z]):
@@ -87,4 +102,5 @@ class Board:
             print(self.logicBoard[k])
           break
       if found:
+        boat.setBoardSquare(-1,-1)
         break

@@ -12,7 +12,9 @@ COLOR_WHITE = (255,255,255)
 
 #FONT
 FONT_SIZE = 12
+BIGFONT = 32
 FONT = pygame.font.Font(pygame.font.get_default_font(), FONT_SIZE)
+BIG_FONT = pygame.font.Font(pygame.font.get_default_font(),BIGFONT)
 
 #IMAGE LOADER
 ICON = pygame.image.load('battleship\\utils\\game_logo.jpg')
@@ -24,12 +26,15 @@ OCEANBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\o
 
 #TEXTS
 COPYRIGHT = FONT.render('@copyright by Voda',True,COLOR_WHITE)
-
+STRATEGY_PANEL = BIG_FONT.render('STRATEGY PANEL',True,COLOR_WHITE)
+COMPUTER_BOARD = BIG_FONT.render('COMPUTER BOARD',True,COLOR_WHITE)
+PLAYER_BOARD = BIG_FONT.render('PLAYER BOARD',True,COLOR_WHITE)
 
 #BOARD 
 BOARD_ROWS = 10
 BOARD_COL = 10
 SQUARE_SIZE = 55
+SQUARE_SIZE_MINI = 40
 
 
 
