@@ -50,3 +50,9 @@ class Boat:
     else:
       self.height = SQUARE_SIZE_MINI
       self.width = self.height * self.size
+      
+  def __str__(self) -> str:
+    return f"{self.name} | {self.position} | {self.boardSquare} | {self.view}"
+      
+  def __repr__(self) -> str:
+    return self.__str__()

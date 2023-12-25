@@ -1,3 +1,4 @@
+import random
 import pygame
 pygame.init()
 from domain.board import *
@@ -16,6 +17,17 @@ class GUI:
     
   def playerName(self,playerName):
     self.playerName = playerName
+    
+  
+  def createBoatsForComputer(self):
+    for each in self.computerBoats:
+      while each.boardSquare[0] == -1:
+        number = random.randint(1,100)
+        if number % 2 == 0:
+          each.changeAlign()
+        each.position = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
+        each.draw()
+        self.computerBoard.verifyCoordsinSquare(each)
     
     
     
@@ -112,6 +124,7 @@ class GUI:
     self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
     self.computerBoard.boardPlaying(80,150,COMPUTER_BOARD)
     self.createBoatsView()
+    self.createComputerBoatsView()
     self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
     self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
     
@@ -126,6 +139,8 @@ class GUI:
   def createBoatsView(self):
     for each in self.playerBoats:
       each.draw()
+  
+  def createComputerBoatsView(self):
     for each in self.computerBoats:
       each.draw()
     
@@ -146,7 +161,7 @@ class GUI:
     self.computerBoatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface,self.computerBoard)
     self.computerBoatPatrol = Boat('Patrol',BOAT_PATROL,170,375,(51,205,204),self.uiInterface,self.computerBoard) 
     
-    #self.computerBoats = [self.computerBoatCarrier,self.computerBoatBattleship,self.computerBoatDestroyer,self.computerBoatSubmarine,self.computerBoatPatrol]
+    self.computerBoats = [self.computerBoatCarrier,self.computerBoatBattleship,self.computerBoatDestroyer,self.computerBoatSubmarine,self.computerBoatPatrol]
     
     
   def verifyPositionBoat(self,mousePos):
@@ -193,6 +208,12 @@ class GUI:
       self.strategyPanel()
       
     if self.isPlaying:
+      self.computerBoard.boardview()
+      self.createBoatsForComputer()
+      
+      for each in self.computerBoats:
+        print(each)
+      
       for each in self.playerBoats:
         each.setSquareSize(SQUARE_SIZE_MINI)
       for each in self.computerBoats:

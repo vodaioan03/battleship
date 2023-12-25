@@ -10,7 +10,6 @@ class Board:
     self.board = [[]]
     self.uiInterface = ui
     self.oneNeeded = BOAT_CARRIER + BOAT_BATTLESHIP + BOAT_DESTROYER + BOAT_PATROL + BOAT_SUBMARINE
-    print(self.oneNeeded)
     self.ones = 0
       
   def boardview(self):
@@ -72,13 +71,13 @@ class Board:
             boat.isAdded = False
             boat.setBoardSquare(-1,-1)
           found = True
-          for k in range(len(self.logicBoard)):
-            print(self.logicBoard[k])
           break
       if error:
         boat.position = boat.initialPosition
         boat.isAdded = False
         boat.setBoardSquare(-1,-1)
+      for k in range(len(self.logicBoard)):
+        print(self.logicBoard[k])
       if found:
         break
       
@@ -98,8 +97,6 @@ class Board:
                 self.logicBoard[i][z+k] = 0
                 self.ones -= 1
           found = True
-          for k in range(len(self.logicBoard)):
-            print(self.logicBoard[k])
           break
       if found:
         boat.setBoardSquare(-1,-1)
