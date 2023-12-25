@@ -11,6 +11,8 @@ class Board:
     self.uiInterface = ui
     self.oneNeeded = BOAT_CARRIER + BOAT_BATTLESHIP + BOAT_DESTROYER + BOAT_PATROL + BOAT_SUBMARINE
     self.ones = 0
+    self.totalShots = 0
+    self.boatShots = 0
       
   def boardview(self):
     self.board  = [[]]
@@ -43,23 +45,35 @@ class Board:
             if boat.align == 'Vertical' and i+boat.size-1 < BOARD_COL+1:
               print("Vertical")
               for k in range(0,boat.size):
-                if self.logicBoard[i+k][z] == 1:
+                if self.logicBoard[i+k][z] != 0:
                   error = True
                   found = True
                   break
-                self.logicBoard[i+k][z] = 1
-                self.ones += 1
+              if error == False:
+                for k in range(0,boat.size):
+                  if self.logicBoard[i+k][z] != 0:
+                    error = True
+                    found = True
+                    break
+                  self.logicBoard[i+k][z] = boat
+                  self.ones += 1
               boat.isAdded = True
               boat.setBoardSquare(i,z)
             elif boat.align == 'Horizontal' and z+boat.size-1 < BOARD_ROWS+1:
               print("Horizontal")
               for k in range(0,boat.size):
-                if self.logicBoard[i][z+k] == 1:
+                if self.logicBoard[i][z+k] != 0:
                   error = True
                   found = True
                   break
-                self.logicBoard[i][z+k] = 1
-                self.ones += 1
+              if error == False:
+                for k in range(0,boat.size):
+                  if self.logicBoard[i][z+k] != 0:
+                    error = True
+                    found = True
+                    break
+                  self.logicBoard[i][z+k] = boat
+                  self.ones += 1
               boat.isAdded = True
               boat.setBoardSquare(i,z)
             else:
@@ -87,7 +101,7 @@ class Board:
       for z in range(1,BOARD_ROWS+1):
         if boat.view.colliderect(self.board[i][z]):
           boat.position = (self.board[i][z].x,self.board[i][z].y)
-          if self.logicBoard[i][z] == 1:
+          if self.logicBoard[i][z] != 0:
             if boat.align == 'Vertical':
               for k in range(0,boat.size):
                 self.logicBoard[i+k][z] = 0
@@ -101,3 +115,26 @@ class Board:
       if found:
         boat.setBoardSquare(-1,-1)
         break
+      
+      
+  def boardShot(self,positiom):
+    for i in range(1,BOARD_COL+1):
+      for z in range(1,BOARD_ROWS+1):
+        pos = (self.board[i][z].x,self.board[i][z].y)
+        if pos[0] < positiom[0] and pos[0]+SQUARE_SIZE_MINI > positiom[0]:
+          if pos[1] < positiom[1] and pos[1]+SQUARE_SIZE_MINI > positiom[1]:
+            boatInSquare = self.logicBoard[i][z]
+            if isinstance(boatInSquare,Boat):
+              self.boatShots += 1
+              boatInSquare.shots += 1
+            self.logicBoard[i][z] = 2
+            self.totalShots += 1
+            
+  def addShotsOnMap(self):
+    for i in range(1,BOARD_COL+1):
+      for z in range(1,BOARD_ROWS+1):
+        if self.logicBoard[i][z] == 2:
+          x,y = self.board[i][z].x,self.board[i][z].y
+          self.uiInterface.blit(EXPLODEICON,(x+5,y+5))
+            
+           

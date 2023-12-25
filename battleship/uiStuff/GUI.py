@@ -14,6 +14,7 @@ class GUI:
     print("Entry on GUI.")
     self.playerBoats = []
     self.computerBoats = []
+    self.winner = None
     
   def playerName(self,playerName):
     self.playerName = playerName
@@ -120,15 +121,56 @@ class GUI:
           self.isOnMenu = False
           self.inStrategy = False
           self.isPlaying = False
+          self.inWinner = False
           break
+        if SQUARE_SIZE_MINI+80 <= mousePos[0] <= SQUARE_SIZE_MINI*(BOARD_ROWS+1)+80 and SQUARE_SIZE_MINI+150 <= mousePos[1] <= SQUARE_SIZE_MINI*(BOARD_COL+1)+150:
+          print("pe buton : ",mousePos)
+          self.computerBoard.boardShot(mousePos)
     self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
     self.computerBoard.boardPlaying(80,150,COMPUTER_BOARD)
     self.createBoatsView()
     self.createComputerBoatsView()
+    self.computerBoard.addShotsOnMap()
+    self.playerBoard.addShotsOnMap()
     self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
     self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
+
+    if self.computerBoard.boatShots == self.computerBoard.oneNeeded:
+      self.winner = 1
+    elif self.playerBoard.boatShots == self.playerBoard.oneNeeded:
+      self.winner = 2
+    
+    if self.winner != None:
+      self.isPlaying = False
+      self.inWinner = True
     
     pygame.display.update() #
+      
+      
+  def winnerPanel(self):
+    self.uiInterface.fill((0,0,0))
+    
+    for event in pygame.event.get():  
+      if event.type == pygame.QUIT:  
+        self.isOnMenu = False
+        self.inStrategy = False
+        self.isPlaying = False
+        self.inWinner = False
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        mousePos = pygame.mouse.get_pos()
+        # QUIT BUTTON
+        if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
+          self.isOnMenu = False
+          self.inStrategy = False
+          self.isPlaying = False
+          self.inWinner = False
+          break
+    self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
+    self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
+
+    
+    pygame.display.update() #
+
     
     
   def create_board(self):
@@ -190,6 +232,7 @@ class GUI:
     self.isOnMenu= True
     self.inStrategy = False
     self.isPlaying = False
+    self.inWinner = False
     pygame.display.set_caption('BattleShip - Minigame')
     pygame.display.set_icon(ICON)
     
@@ -221,5 +264,8 @@ class GUI:
       
     while self.isPlaying:
       self.playingPanel()
+      
+    while self.inWinner:
+      self.winnerPanel()
       
     pygame.quit()

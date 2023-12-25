@@ -11,6 +11,7 @@ class StartGame:
     self.uiInterface = uiInteface
     self.playerName = playerName
     self.uiInterface.playerName(playerName)
+    
   
   def playGame(self):
     # while self.playingGame:

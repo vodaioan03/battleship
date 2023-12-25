@@ -22,6 +22,7 @@ PLAYBUTTON = pygame.transform.scale(pygame.image.load('battleship\\utils\\play_b
 QUITBUTTON = pygame.transform.scale(pygame.image.load('battleship\\utils\\quit_button.png'),(128,64))
 BACKGROUNDIMAGE = pygame.transform.scale(pygame.image.load('battleship\\utils\\background_image.jpg'),(WIDTH,HEIGHT))
 OCEANBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\oceanview.jpg'),(WIDTH,HEIGHT))
+EXPLODEICON = pygame.transform.scale(pygame.image.load('battleship\\utils\\explode.png'),(30,30))
 
 
 #TEXTS

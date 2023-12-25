@@ -17,6 +17,7 @@ class Boat:
     self.isAdded = False
     self.boardSquare = (-1,-1)
     self.board = Board
+    self.shots = 0
     
   def changeAlign(self):
     if not self.isAdded:
