@@ -125,7 +125,11 @@ class GUI:
           break
         if SQUARE_SIZE_MINI+80 <= mousePos[0] <= SQUARE_SIZE_MINI*(BOARD_ROWS+1)+80 and SQUARE_SIZE_MINI+150 <= mousePos[1] <= SQUARE_SIZE_MINI*(BOARD_COL+1)+150:
           print("pe buton : ",mousePos)
-          self.computerBoard.boardShot(mousePos)
+          if self.computerBoard.checkShoot(mousePos):
+            self.computerBoard.boardShot(mousePos)
+            self.sendShot()
+          else:
+            print("Invalid Shot!")
     self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
     self.computerBoard.boardPlaying(80,150,COMPUTER_BOARD)
     self.createBoatsView()
@@ -171,7 +175,16 @@ class GUI:
     
     pygame.display.update() #
 
-    
+  def sendShot(self):
+    squarei = random.randint(1,BOARD_ROWS)
+    squarez = random.randint(1,BOARD_ROWS)
+    while self.playerBoard.logicBoard[squarei][squarez] == 2:
+      squarei = random.randint(1,BOARD_ROWS)
+      squarez = random.randint(1,BOARD_ROWS)
+    print(self.playerBoard.logicBoard[squarei][squarez])
+
+    coors = self.playerBoard.getCoordsForSquare(squarei,squarez)
+    self.playerBoard.boardShot(coors)
     
   def create_board(self):
     self.playerBoard.boardview()

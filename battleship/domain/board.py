@@ -13,6 +13,7 @@ class Board:
     self.ones = 0
     self.totalShots = 0
     self.boatShots = 0
+    self.squareSize = SQUARE_SIZE
       
   def boardview(self):
     self.board  = [[]]
@@ -24,7 +25,7 @@ class Board:
     pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE+340,SQUARE_SIZE+40,BOARD_COL*SQUARE_SIZE,BOARD_ROWS*SQUARE_SIZE],1)
     
   def boardPlaying(self,xAdd,yAdd,text): 
-    
+    self.squareSize = SQUARE_SIZE_MINI
     self.uiInterface.blit(text,(xAdd+SQUARE_SIZE_MINI+40,yAdd))
     self.board  = [[]]
     for i in range(1,BOARD_COL+1):
@@ -43,7 +44,6 @@ class Board:
           boat.position = (self.board[i][z].x,self.board[i][z].y)
           if self.logicBoard[i][z] == 0:
             if boat.align == 'Vertical' and i+boat.size-1 < BOARD_COL+1:
-              print("Vertical")
               for k in range(0,boat.size):
                 if self.logicBoard[i+k][z] != 0:
                   error = True
@@ -60,7 +60,6 @@ class Board:
               boat.isAdded = True
               boat.setBoardSquare(i,z)
             elif boat.align == 'Horizontal' and z+boat.size-1 < BOARD_ROWS+1:
-              print("Horizontal")
               for k in range(0,boat.size):
                 if self.logicBoard[i][z+k] != 0:
                   error = True
@@ -90,8 +89,6 @@ class Board:
         boat.position = boat.initialPosition
         boat.isAdded = False
         boat.setBoardSquare(-1,-1)
-      for k in range(len(self.logicBoard)):
-        print(self.logicBoard[k])
       if found:
         break
       
@@ -121,14 +118,18 @@ class Board:
     for i in range(1,BOARD_COL+1):
       for z in range(1,BOARD_ROWS+1):
         pos = (self.board[i][z].x,self.board[i][z].y)
-        if pos[0] < positiom[0] and pos[0]+SQUARE_SIZE_MINI > positiom[0]:
-          if pos[1] < positiom[1] and pos[1]+SQUARE_SIZE_MINI > positiom[1]:
+        if pos[0] < positiom[0] and pos[0]+self.squareSize >= positiom[0]:
+          if pos[1] < positiom[1] and pos[1]+self.squareSize >= positiom[1]:
             boatInSquare = self.logicBoard[i][z]
-            if isinstance(boatInSquare,Boat):
-              self.boatShots += 1
-              boatInSquare.shots += 1
-            self.logicBoard[i][z] = 2
-            self.totalShots += 1
+            if boatInSquare != 2:
+              if isinstance(boatInSquare,Boat):
+                self.boatShots += 1
+                boatInSquare.shots += 1
+              self.logicBoard[i][z] = 2
+              self.totalShots += 1
+            else:
+              print(f"ERROR: Shot {i,z} is already added!")
+              return
             
   def addShotsOnMap(self):
     for i in range(1,BOARD_COL+1):
@@ -136,5 +137,28 @@ class Board:
         if self.logicBoard[i][z] == 2:
           x,y = self.board[i][z].x,self.board[i][z].y
           self.uiInterface.blit(EXPLODEICON,(x+5,y+5))
-            
+          
+          
+          
+  def getSquareForCoords(self,positiom):
+    for i in range(1,BOARD_COL+1):
+      for z in range(1,BOARD_ROWS+1):
+        pos = (self.board[i][z].x,self.board[i][z].y)
+        if pos[0] < positiom[0] and pos[0]+self.squareSize >= positiom[0]:
+          if pos[1] < positiom[1] and pos[1]+self.squareSize >= positiom[1]:
+            return i,z
+    return -1,-1
+  
+  def getCoordsForSquare(self,i,z):
+    return (self.board[i][z].x+3,self.board[i][z].y+3)
+  
+  def checkShoot(self,positiom):
+    for i in range(1,BOARD_COL+1):
+      for z in range(1,BOARD_ROWS+1):
+        pos = (self.board[i][z].x,self.board[i][z].y)
+        if pos[0] < positiom[0] and pos[0]+self.squareSize >= positiom[0]:
+          if pos[1] < positiom[1] and pos[1]+self.squareSize >= positiom[1]:
+            if self.logicBoard[i][z] == 2:
+              return False
+    return True
            

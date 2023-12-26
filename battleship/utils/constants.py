@@ -1,5 +1,7 @@
 import pygame
 
+# z- in orizontal, i - columnt
+
 #DISPLAY SETTINGS
 WIDTH = 1280
 HEIGHT = 720
