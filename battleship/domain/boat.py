@@ -3,8 +3,9 @@ from domain.board import *
 import pygame
 class Boat:
   
-  def __init__(self,name,size,x,y,color,ui,Board) -> None:
-    self.name = name 
+  def __init__(self,name,img,size,x,y,color,ui,Board) -> None:
+    self.name = name
+    self.img = img
     self.size = size
     self.initialPosition = (x,y)
     self.position = (x,y)
@@ -37,12 +38,13 @@ class Boat:
       y=boatRect.y
     if x != None:
       self.view = pygame.draw.rect(self.uiInterface,self.color,[x,y,self.width,self.height])
+      self.uiInterface.blit(self.img,(x,y))
     else:
       self.view = pygame.draw.rect(self.uiInterface,self.color,[self.position[0],self.position[1],self.width,self.height])
+      self.uiInterface.blit(self.img,(self.position[0],self.position[1]))
     
   def setBoardSquare(self,i,z):
     self.boardSquare = (i,z)
-    print(self.boardSquare)
     
   def setSquareSize(self,size):
     if self.width == SQUARE_SIZE:

@@ -11,6 +11,8 @@ HEIGHT = 720
 COLOR_LIGHT = (170,170,170) 
 COLOR_DARK = (100,100,100) 
 COLOR_WHITE = (255,255,255)
+COLOR_GREY = (115, 115, 115)
+COLOR_BLUE = (51, 51, 255)
 
 #FONT
 FONT_SIZE = 12
@@ -48,3 +50,9 @@ BOAT_BATTLESHIP = 4
 BOAT_DESTROYER = 3
 BOAT_SUBMARINE = 3
 BOAT_PATROL = 2
+
+IMG_BOAT_CARRIER = pygame.transform.scale(pygame.image.load('battleship\\utils\\carrier.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_CARRIER))
+IMG_BOAT_BATTLESHIP =pygame.transform.scale(pygame.image.load('battleship\\utils\\battleship.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_BATTLESHIP))
+IMG_BOAT_DESTROYER = pygame.transform.scale(pygame.image.load('battleship\\utils\\destroyer.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_DESTROYER))
+IMG_BOAT_SUBMARINE = pygame.transform.scale(pygame.image.load('battleship\\utils\\submarine.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_SUBMARINE))
+IMG_BOAT_PATROL = pygame.transform.scale(pygame.image.load('battleship\\utils\\patrol.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_PATROL))

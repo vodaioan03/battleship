@@ -1,4 +1,5 @@
 import random
+import time
 import pygame
 pygame.init()
 from domain.board import *
@@ -109,6 +110,12 @@ class GUI:
     self.uiInterface.fill((0,0,0))
     self.uiInterface.blit(OCEANBACKGROUND,(0,0))
     
+    if self.turn == 'Computer':
+      self.endtime = time.time()
+      if self.endtime - self.start_time > 2:
+        self.sendShot()
+        self.turn = 'Player'
+    
     for event in pygame.event.get():  
       if event.type == pygame.QUIT:  
         self.isOnMenu = False
@@ -123,13 +130,16 @@ class GUI:
           self.isPlaying = False
           self.inWinner = False
           break
-        if SQUARE_SIZE_MINI+80 <= mousePos[0] <= SQUARE_SIZE_MINI*(BOARD_ROWS+1)+80 and SQUARE_SIZE_MINI+150 <= mousePos[1] <= SQUARE_SIZE_MINI*(BOARD_COL+1)+150:
-          print("pe buton : ",mousePos)
-          if self.computerBoard.checkShoot(mousePos):
-            self.computerBoard.boardShot(mousePos)
-            self.sendShot()
-          else:
-            print("Invalid Shot!")
+        if self.turn == 'Player':
+          if SQUARE_SIZE_MINI+80 <= mousePos[0] <= SQUARE_SIZE_MINI*(BOARD_ROWS+1)+80 and SQUARE_SIZE_MINI+150 <= mousePos[1] <= SQUARE_SIZE_MINI*(BOARD_COL+1)+150:
+            if self.computerBoard.checkShoot(mousePos):
+              self.computerBoard.boardShot(mousePos)
+              self.turn = 'Computer'
+              self.start_time = time.time()
+            else:
+              print("Invalid Shot!")
+        else:
+          print("Isn't your turn.")
     self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
     self.computerBoard.boardPlaying(80,150,COMPUTER_BOARD)
     self.createBoatsView()
@@ -181,14 +191,13 @@ class GUI:
     while self.playerBoard.logicBoard[squarei][squarez] == 2:
       squarei = random.randint(1,BOARD_ROWS)
       squarez = random.randint(1,BOARD_ROWS)
-    print(self.playerBoard.logicBoard[squarei][squarez])
 
     coors = self.playerBoard.getCoordsForSquare(squarei,squarez)
     self.playerBoard.boardShot(coors)
     
   def create_board(self):
     self.playerBoard.boardview()
-    pygame.draw.rect(self.uiInterface,(230,230,230),[0,95,300,500])
+    pygame.draw.rect(self.uiInterface,COLOR_BLUE,[0,95,300,500])
     self.createBoatsView()
     
   def createBoatsView(self):
@@ -201,20 +210,20 @@ class GUI:
     
   def createBoats(self):
     self.playerBoard = Board(self.uiInterface)
-    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,(0,0,0),self.uiInterface,self.playerBoard)
-    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,(255,0,102),self.uiInterface,self.playerBoard)
-    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,(100,100,100),self.uiInterface,self.playerBoard)
-    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface,self.playerBoard)
-    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,(51,205,204),self.uiInterface,self.playerBoard) 
+    self.boatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,(0,0,0),self.uiInterface,self.playerBoard)
+    self.boatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,(255,0,102),self.uiInterface,self.playerBoard)
+    self.boatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,(100,100,100),self.uiInterface,self.playerBoard)
+    self.boatSubmarine = Boat('Submarine',IMG_BOAT_SUBMARINE,BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface,self.playerBoard)
+    self.boatPatrol = Boat('Patrol',IMG_BOAT_PATROL,BOAT_PATROL,170,375,(51,205,204),self.uiInterface,self.playerBoard) 
     
     self.playerBoats = [self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol]
     
     self.computerBoard = Board(self.uiInterface)
-    self.computerBoatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,(0,0,0),self.uiInterface,self.computerBoard)
-    self.computerBoatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,(255,0,102),self.uiInterface,self.computerBoard)
-    self.computerBoatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,(100,100,100),self.uiInterface,self.computerBoard)
-    self.computerBoatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface,self.computerBoard)
-    self.computerBoatPatrol = Boat('Patrol',BOAT_PATROL,170,375,(51,205,204),self.uiInterface,self.computerBoard) 
+    self.computerBoatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,(0,0,0),self.uiInterface,self.computerBoard)
+    self.computerBoatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,(255,0,102),self.uiInterface,self.computerBoard)
+    self.computerBoatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,(100,100,100),self.uiInterface,self.computerBoard)
+    self.computerBoatSubmarine = Boat('Submarine',IMG_BOAT_SUBMARINE,BOAT_SUBMARINE,100,375,(255,255,0),self.uiInterface,self.computerBoard)
+    self.computerBoatPatrol = Boat('Patrol',IMG_BOAT_PATROL,BOAT_PATROL,170,375,(51,205,204),self.uiInterface,self.computerBoard) 
     
     self.computerBoats = [self.computerBoatCarrier,self.computerBoatBattleship,self.computerBoatDestroyer,self.computerBoatSubmarine,self.computerBoatPatrol]
     
@@ -222,19 +231,14 @@ class GUI:
   def verifyPositionBoat(self,mousePos):
     rect = None
     if self.boatBattleship.position[1] <= mousePos[1] <= (self.boatBattleship.position[1] +self.boatBattleship.height) and self.boatBattleship.position[0] <= mousePos[0] <= (self.boatBattleship.position[0] + self.boatBattleship.width):
-      print("Battleship boat")
       rect = self.boatBattleship
     if self.boatCarrier.position[1] <= mousePos[1] <= (self.boatCarrier.position[1] + self.boatCarrier.height) and self.boatCarrier.position[0] <= mousePos[0] <= (self.boatCarrier.position[0] + self.boatCarrier.width):
-      print("Carrier boat")
       rect = self.boatCarrier
     if self.boatDestroyer.position[1] <= mousePos[1] <= (self.boatDestroyer.position[1] +self.boatDestroyer.height) and self.boatDestroyer.position[0] <= mousePos[0] <= (self.boatDestroyer.position[0] + self.boatDestroyer.width):
-      print("Destroyer boat")
       rect = self.boatDestroyer
     if self.boatSubmarine.position[1] <= mousePos[1] <= (self.boatSubmarine.position[1] +self.boatSubmarine.height) and self.boatSubmarine.position[0] <= mousePos[0] <= (self.boatSubmarine.position[0] + self.boatSubmarine.width):
-      print("Submarine boat")
       rect = self.boatSubmarine
     if self.boatPatrol.position[1] <= mousePos[1] <= (self.boatPatrol.position[1] + self.boatPatrol.height) and self.boatPatrol.position[0] <= mousePos[0] <= (self.boatPatrol.position[0] + self.boatPatrol.width):
-      print("Patrol boat")
       rect = self.boatPatrol
     if rect:
       return rect
@@ -267,13 +271,11 @@ class GUI:
       self.computerBoard.boardview()
       self.createBoatsForComputer()
       
-      for each in self.computerBoats:
-        print(each)
-      
       for each in self.playerBoats:
         each.setSquareSize(SQUARE_SIZE_MINI)
       for each in self.computerBoats:
         each.setSquareSize(SQUARE_SIZE_MINI)
+      self.turn = 'Player'
       
     while self.isPlaying:
       self.playingPanel()

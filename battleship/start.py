@@ -3,7 +3,6 @@ from uiStuff.uiConsole import *
 import configparser
 from colorama import *
 
-
   
 class StartGame:
   
