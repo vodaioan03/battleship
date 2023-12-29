@@ -115,6 +115,7 @@ class Board:
       
       
   def boardShot(self,positiom):
+    message = 'You hit '
     for i in range(1,BOARD_COL+1):
       for z in range(1,BOARD_ROWS+1):
         pos = (self.board[i][z].x,self.board[i][z].y)
@@ -125,11 +126,14 @@ class Board:
               if isinstance(boatInSquare,Boat):
                 self.boatShots += 1
                 boatInSquare.shots += 1
+                message += ' a boat!'
+              else:
+                message += ' water!'
               self.logicBoard[i][z] = 2
               self.totalShots += 1
             else:
-              print(f"ERROR: Shot {i,z} is already added!")
-              return
+              return f"ERROR: Shot {i,z} is already added!"
+            return message
             
   def addShotsOnMap(self):
     for i in range(1,BOARD_COL+1):

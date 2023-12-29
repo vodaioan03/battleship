@@ -5,7 +5,6 @@ class Boat:
   
   def __init__(self,name,img,size,x,y,color,ui,Board) -> None:
     self.name = name
-    self.img = img
     self.size = size
     self.initialPosition = (x,y)
     self.position = (x,y)
@@ -19,14 +18,18 @@ class Boat:
     self.boardSquare = (-1,-1)
     self.board = Board
     self.shots = 0
+    self.img = pygame.transform.scale(img,(self.width,self.width*size))
     
   def changeAlign(self):
     if not self.isAdded:
       self.width,self.height = self.height, self.width
       if self.align == 'Vertical':
         self.align = 'Horizontal'
+        self.img = pygame.transform.rotate(self.img, 90)
       else:
         self.align = 'Vertical'
+        self.img = pygame.transform.rotate(self.img, -90)
+        #self.img = pygame.transform.scale(self.img,(SQUARE_SIZE,SQUARE_SIZE*self.size))
     else:
       pass
     
@@ -48,11 +51,15 @@ class Boat:
     
   def setSquareSize(self,size):
     if self.width == SQUARE_SIZE:
-      self.width = SQUARE_SIZE_MINI
+      self.width = size
       self.height = self.width * self.size
+      self.img = pygame.transform.scale(self.img,(self.width,self.width*self.size))
     else:
-      self.height = SQUARE_SIZE_MINI
+      self.height = size
       self.width = self.height * self.size
+      self.img = pygame.transform.rotate(self.img, -90)
+      self.img = pygame.transform.scale(self.img,(self.height,self.height*self.size))
+      self.img = pygame.transform.rotate(self.img, 90)
       
   def __str__(self) -> str:
     return f"{self.name} | {self.position} | {self.boardSquare} | {self.view}"

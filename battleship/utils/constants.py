@@ -27,6 +27,8 @@ QUITBUTTON = pygame.transform.scale(pygame.image.load('battleship\\utils\\quit_b
 BACKGROUNDIMAGE = pygame.transform.scale(pygame.image.load('battleship\\utils\\background_image.jpg'),(WIDTH,HEIGHT))
 OCEANBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\oceanview.jpg'),(WIDTH,HEIGHT))
 EXPLODEICON = pygame.transform.scale(pygame.image.load('battleship\\utils\\explode.png'),(30,30))
+WIN = pygame.transform.scale(pygame.image.load('battleship\\utils\\youwin.png'),(360,360))
+LOOSE = pygame.transform.scale(pygame.image.load('battleship\\utils\\youlose.png'),(360,360))
 
 
 #TEXTS
@@ -50,9 +52,13 @@ BOAT_BATTLESHIP = 4
 BOAT_DESTROYER = 3
 BOAT_SUBMARINE = 3
 BOAT_PATROL = 2
-
-IMG_BOAT_CARRIER = pygame.transform.scale(pygame.image.load('battleship\\utils\\carrier.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_CARRIER))
-IMG_BOAT_BATTLESHIP =pygame.transform.scale(pygame.image.load('battleship\\utils\\battleship.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_BATTLESHIP))
-IMG_BOAT_DESTROYER = pygame.transform.scale(pygame.image.load('battleship\\utils\\destroyer.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_DESTROYER))
-IMG_BOAT_SUBMARINE = pygame.transform.scale(pygame.image.load('battleship\\utils\\submarine.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_SUBMARINE))
-IMG_BOAT_PATROL = pygame.transform.scale(pygame.image.load('battleship\\utils\\patrol.png'),(SQUARE_SIZE,SQUARE_SIZE*BOAT_PATROL))
+IMG_BOAT_CARRIER = pygame.image.load('battleship\\utils\\carrier.png')
+#pygame.transform.scale(IMG_BOAT_CARRIER,(SQUARE_SIZE,SQUARE_SIZE*BOAT_CARRIER))
+IMG_BOAT_BATTLESHIP = pygame.image.load('battleship\\utils\\battleship.png')
+#pygame.transform.scale(IMG_BOAT_BATTLESHIP,(SQUARE_SIZE,SQUARE_SIZE*BOAT_BATTLESHIP))
+IMG_BOAT_DESTROYER = pygame.image.load('battleship\\utils\\destroyer.png')
+#pygame.transform.scale(IMG_BOAT_DESTROYER,(SQUARE_SIZE,SQUARE_SIZE*BOAT_DESTROYER))
+IMG_BOAT_SUBMARINE = pygame.image.load('battleship\\utils\\submarine.png')
+#pygame.transform.scale(IMG_BOAT_SUBMARINE,(SQUARE_SIZE,SQUARE_SIZE*BOAT_SUBMARINE))
+IMG_BOAT_PATROL = pygame.image.load('battleship\\utils\\patrol.png')
+#pygame.transform.scale(IMG_BOAT_PATROL,(SQUARE_SIZE,SQUARE_SIZE*BOAT_PATROL))

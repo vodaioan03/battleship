@@ -16,6 +16,8 @@ class GUI:
     self.playerBoats = []
     self.computerBoats = []
     self.winner = None
+    self.debug = False
+    self.message = ''
     
   def playerName(self,playerName):
     self.playerName = playerName
@@ -111,10 +113,14 @@ class GUI:
     self.uiInterface.blit(OCEANBACKGROUND,(0,0))
     
     if self.turn == 'Computer':
+      self.uiInterface.blit(self.message,(120+SQUARE_SIZE_MINI+40,600))
       self.endtime = time.time()
       if self.endtime - self.start_time > 2:
-        self.sendShot()
+        self.message = self.sendShot()
+        self.message = BIG_FONT.render(self.message,True,COLOR_WHITE)
         self.turn = 'Player'
+    if self.turn == 'Player' and self.message != '':
+      self.uiInterface.blit(self.message,(740+SQUARE_SIZE_MINI+40,600))
     
     for event in pygame.event.get():  
       if event.type == pygame.QUIT:  
@@ -133,26 +139,35 @@ class GUI:
         if self.turn == 'Player':
           if SQUARE_SIZE_MINI+80 <= mousePos[0] <= SQUARE_SIZE_MINI*(BOARD_ROWS+1)+80 and SQUARE_SIZE_MINI+150 <= mousePos[1] <= SQUARE_SIZE_MINI*(BOARD_COL+1)+150:
             if self.computerBoard.checkShoot(mousePos):
-              self.computerBoard.boardShot(mousePos)
+              self.message = self.computerBoard.boardShot(mousePos)
+              self.message = BIG_FONT.render(self.message,True,COLOR_WHITE)
               self.turn = 'Computer'
               self.start_time = time.time()
             else:
               print("Invalid Shot!")
         else:
           print("Isn't your turn.")
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_F1:
+          self.debug = not self.debug
+        if event.key == pygame.K_F2:
+          self.winner = 1
+        if event.key == pygame.K_SPACE:
+          self.playerBoard.boatShots = self.playerBoard.oneNeeded - 1
     self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
     self.computerBoard.boardPlaying(80,150,COMPUTER_BOARD)
     self.createBoatsView()
-    self.createComputerBoatsView()
+    if self.debug:
+      self.createComputerBoatsView()
     self.computerBoard.addShotsOnMap()
     self.playerBoard.addShotsOnMap()
     self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
     self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
 
     if self.computerBoard.boatShots == self.computerBoard.oneNeeded:
-      self.winner = 1
+      self.winner = 1 #PLAYER
     elif self.playerBoard.boatShots == self.playerBoard.oneNeeded:
-      self.winner = 2
+      self.winner = 2 #COMPUTER
     
     if self.winner != None:
       self.isPlaying = False
@@ -162,7 +177,7 @@ class GUI:
       
       
   def winnerPanel(self):
-    self.uiInterface.fill((0,0,0))
+    self.uiInterface.fill((100,100,100))
     
     for event in pygame.event.get():  
       if event.type == pygame.QUIT:  
@@ -181,7 +196,10 @@ class GUI:
           break
     self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
     self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
-
+    if self.winner == 1:
+      self.uiInterface.blit(WIN,(450,150))
+    else:
+      self.uiInterface.blit(LOOSE,(450,150))
     
     pygame.display.update() #
 
@@ -193,7 +211,7 @@ class GUI:
       squarez = random.randint(1,BOARD_ROWS)
 
     coors = self.playerBoard.getCoordsForSquare(squarei,squarez)
-    self.playerBoard.boardShot(coors)
+    return self.playerBoard.boardShot(coors)
     
   def create_board(self):
     self.playerBoard.boardview()
