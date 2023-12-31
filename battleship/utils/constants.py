@@ -13,6 +13,7 @@ COLOR_DARK = (100,100,100)
 COLOR_WHITE = (255,255,255)
 COLOR_GREY = (115, 115, 115)
 COLOR_BLUE = (51, 51, 255)
+COLOR_BLACK = (0,0,0)
 
 #FONT
 FONT_SIZE = 12
@@ -29,6 +30,7 @@ OCEANBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\o
 EXPLODEICON = pygame.transform.scale(pygame.image.load('battleship\\utils\\explode.png'),(30,30))
 WIN = pygame.transform.scale(pygame.image.load('battleship\\utils\\youwin.png'),(360,360))
 LOOSE = pygame.transform.scale(pygame.image.load('battleship\\utils\\youlose.png'),(360,360))
+WINNERBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\winnerbackground.jpg'),(WIDTH,HEIGHT))
 
 
 #TEXTS

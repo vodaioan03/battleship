@@ -40,10 +40,10 @@ class Boat:
       x=boatRect.x
       y=boatRect.y
     if x != None:
-      self.view = pygame.draw.rect(self.uiInterface,self.color,[x,y,self.width,self.height])
+      self.view = pygame.draw.rect(self.uiInterface,self.color,[x,y,self.width,self.height],1)
       self.uiInterface.blit(self.img,(x,y))
     else:
-      self.view = pygame.draw.rect(self.uiInterface,self.color,[self.position[0],self.position[1],self.width,self.height])
+      self.view = pygame.draw.rect(self.uiInterface,self.color,[self.position[0],self.position[1],self.width,self.height],1)
       self.uiInterface.blit(self.img,(self.position[0],self.position[1]))
     
   def setBoardSquare(self,i,z):

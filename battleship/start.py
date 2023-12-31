@@ -3,6 +3,8 @@ from uiStuff.uiConsole import *
 import configparser
 from colorama import *
   
+
+  
 class StartGame:
   
   def __init__(self,uiInterface, playerName:str) -> None:
