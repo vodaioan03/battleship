@@ -32,7 +32,8 @@ WIN = pygame.transform.scale(pygame.image.load('battleship\\utils\\youwin.png'),
 LOOSE = pygame.transform.scale(pygame.image.load('battleship\\utils\\youlose.png'),(360,360))
 WINNERBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\winnerbackground.jpg'),(WIDTH,HEIGHT))
 SHUFFLE_BUTTON = pygame.transform.scale(pygame.image.load('battleship\\utils\\shuffle.png'),(50,50))
-
+OCEAN_STORM = pygame.transform.scale(pygame.image.load('battleship\\utils\\oceanStorm.jpg'),(WIDTH,HEIGHT))
+TEXTURE = pygame.transform.scale(pygame.image.load('battleship\\utils\\texture.jpg'),(300,500))
 #TEXTS
 COPYRIGHT = FONT.render('@copyright by Voda',True,COLOR_WHITE)
 STRATEGY_PANEL = BIG_FONT.render('STRATEGY PANEL',True,COLOR_WHITE)

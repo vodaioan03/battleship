@@ -60,11 +60,13 @@ class GUI:
           self.quitGame()
         if event.type == pygame.MOUSEBUTTONDOWN:
           mousePos = pygame.mouse.get_pos()
+          
           #PLAY BUTTON
           if WIDTH/2-80 <= mousePos[0] <= WIDTH/2+48 and HEIGHT/2+50 <= mousePos[1] <= HEIGHT/2+114: 
             self.isOnMenu = False
             self.inStrategy = True
             break
+          
           # QUIT BUTTON
           if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
             self.quitGame()
@@ -83,24 +85,31 @@ class GUI:
       
     while self.inStrategy:
       self.uiInterface.fill(COLOR_BLACK)
+      self.uiInterface.blit(OCEANBACKGROUND,(0,0))
       for event in pygame.event.get():  
         if event.type == pygame.QUIT:  
           self.quitGame()
         mousePos = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN:
-          # QUIT BUTTON
+          
           if event.button == 1:
+            
+            # QUIT BUTTON
             if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
               self.quitGame()
               break
+            
             #START BUTTON
             if WIDTH/2-100 <= mousePos[0] <= WIDTH/2+28 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16 and self.playerBoard.ones == self.playerBoard.oneNeeded: 
               self.inStrategy = False
               self.isPlaying = True
               break
+            
+            #SHUFFLE BUTTON
             if 130 <= mousePos[0] <= 180 and HEIGHT-120 <= mousePos[1] <= HEIGHT-70: 
               self.spawnRandomBoats(self.playerBoard,self.playerBoats)
             self.rect = self.verifyPositionBoat(mousePos)
+            
             if self.rect != None:
               self.playerBoard.boatTaken(self.rect)
             self.mouseDown = True
@@ -120,11 +129,14 @@ class GUI:
         if event.type == pygame.KEYDOWN:
           if event.key == pygame.K_F1:
             self.spawnRandomBoats(self.playerBoard,self.playerBoats)
+            
       self.create_board()
+      
       self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
       self.uiInterface.blit(COPYRIGHT, (20,HEIGHT-20))  
       self.uiInterface.blit(STRATEGY_PANEL,(WIDTH/2-120,50))
       self.uiInterface.blit(SHUFFLE_BUTTON,(130,HEIGHT-120))
+      
       if self.playerBoard.ones == self.playerBoard.oneNeeded:
         self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
       pygame.display.update() # UPDATE GAME WINDOW
@@ -142,7 +154,7 @@ class GUI:
         each.setSquareSize(SQUARE_SIZE_MINI)
     while self.isPlaying:
       self.uiInterface.fill(COLOR_BLACK)
-      self.uiInterface.blit(OCEANBACKGROUND,(0,0))
+      self.uiInterface.blit(OCEAN_STORM,(0,0))
       
       if self.turn == 'Computer':
         self.uiInterface.blit(self.message,(120+SQUARE_SIZE_MINI+40,600))
@@ -238,7 +250,8 @@ class GUI:
     
   def create_board(self):
     self.playerBoard.boardview()
-    pygame.draw.rect(self.uiInterface,COLOR_BLUE,[0,95,300,500])
+    #pygame.draw.rect(self.uiInterface,COLOR_BLUE,[0,95,300,500])
+    self.uiInterface.blit(TEXTURE,(0,95))
     self.createBoatsView()
     
   def createBoatsView(self):
