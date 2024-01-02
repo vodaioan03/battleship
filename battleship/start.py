@@ -14,9 +14,7 @@ class StartGame:
     
   
   def playGame(self):
-    # while self.playingGame:
     self.uiInterface.startGame()
-    pass
 
 if __name__ == "__main__":
   uiOptions = {'1':UI,'2':GUI} #IF you wan't to choose you need to make another class.

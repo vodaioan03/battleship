@@ -31,7 +31,7 @@ EXPLODEICON = pygame.transform.scale(pygame.image.load('battleship\\utils\\explo
 WIN = pygame.transform.scale(pygame.image.load('battleship\\utils\\youwin.png'),(360,360))
 LOOSE = pygame.transform.scale(pygame.image.load('battleship\\utils\\youlose.png'),(360,360))
 WINNERBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\winnerbackground.jpg'),(WIDTH,HEIGHT))
-
+SHUFFLE_BUTTON = pygame.transform.scale(pygame.image.load('battleship\\utils\\shuffle.png'),(50,50))
 
 #TEXTS
 COPYRIGHT = FONT.render('@copyright by Voda',True,COLOR_WHITE)

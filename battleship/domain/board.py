@@ -14,6 +14,15 @@ class Board:
     self.totalShots = 0
     self.boatShots = 0
     self.squareSize = SQUARE_SIZE
+    
+  def clearBoard(self):
+    self.logicBoard = [[0 for _ in range(BOARD_COL+1)] for _ in range(BOARD_ROWS+1)]
+    self.logicBoard[0] = []
+    self.board = [[]]
+    self.oneNeeded = BOAT_CARRIER + BOAT_BATTLESHIP + BOAT_DESTROYER + BOAT_PATROL + BOAT_SUBMARINE
+    self.ones = 0
+    self.totalShots = 0
+    self.boatShots = 0
       
   def boardview(self):
     self.board  = [[]]
@@ -35,7 +44,7 @@ class Board:
         self.board[i].append(pygame.draw.rect(self.uiInterface,(0,0,0),[(SQUARE_SIZE_MINI)*z+xAdd,(SQUARE_SIZE_MINI)*i+yAdd,SQUARE_SIZE_MINI,SQUARE_SIZE_MINI],1))
     pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE_MINI+xAdd,SQUARE_SIZE_MINI+yAdd,BOARD_COL*SQUARE_SIZE_MINI,BOARD_ROWS*SQUARE_SIZE_MINI],1)
     
-  def verifyCoordsinSquare(self,boat:Boat):
+  def verifyCoordsinSquare(self,boat:Boat, align=''):
     found = False
     error = False
     for i in range(1,BOARD_COL+1):

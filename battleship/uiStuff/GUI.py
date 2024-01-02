@@ -31,18 +31,24 @@ class GUI:
     self.isPlaying = False
     self.inWinner = False
     
-  
-  def createBoatsForComputer(self):
-    for each in self.computerBoats:
+  def spawnRandomBoats(self, boardUse:Board, boats:list):
+    boardUse.clearBoard()
+    for each in boats:
+      each.reInit()
+    boardUse.boardview()
+    for each in boats:
+      print(each.name)
       while each.boardSquare[0] == -1:
         number = random.randint(1,100)
         if number % 2 == 0:
           each.changeAlign()
         each.position = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
+        square = boardUse.getSquareForCoords(each.position)
+        print("SQUARE: ",square, each.align)
+        if boardUse.logicBoard[square[0]][square[1]] != 0:
+          print(each.name, " USED")
         each.draw()
-        self.computerBoard.verifyCoordsinSquare(each)
-    
-    
+        boardUse.verifyCoordsinSquare(each)
     
   #MAIN MENU 
   def mainMenu(self):
@@ -92,6 +98,8 @@ class GUI:
               self.inStrategy = False
               self.isPlaying = True
               break
+            if 130 <= mousePos[0] <= 180 and HEIGHT-120 <= mousePos[1] <= HEIGHT-70: 
+              self.spawnRandomBoats(self.playerBoard,self.playerBoats)
             self.rect = self.verifyPositionBoat(mousePos)
             if self.rect != None:
               self.playerBoard.boatTaken(self.rect)
@@ -109,10 +117,14 @@ class GUI:
           self.rect = None
         if event.type == pygame.MOUSEMOTION and self.mouseDown and self.rect != None:
           self.rect.position = mousePos
+        if event.type == pygame.KEYDOWN:
+          if event.key == pygame.K_F1:
+            self.spawnRandomBoats(self.playerBoard,self.playerBoats)
       self.create_board()
       self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
       self.uiInterface.blit(COPYRIGHT, (20,HEIGHT-20))  
       self.uiInterface.blit(STRATEGY_PANEL,(WIDTH/2-120,50))
+      self.uiInterface.blit(SHUFFLE_BUTTON,(130,HEIGHT-120))
       if self.playerBoard.ones == self.playerBoard.oneNeeded:
         self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
       pygame.display.update() # UPDATE GAME WINDOW
@@ -122,7 +134,7 @@ class GUI:
   def playingPanel(self):
     if self.isPlaying:
       self.computerBoard.boardview()
-      self.createBoatsForComputer()
+      self.spawnRandomBoats(self.computerBoard,self.computerBoats)
       
       for each in self.playerBoats:
         each.setSquareSize(SQUARE_SIZE_MINI)
@@ -223,16 +235,6 @@ class GUI:
         self.uiInterface.blit(LOOSE,(450,150))
       
       pygame.display.update() #
-
-  def sendShot(self):
-    squarei = random.randint(1,BOARD_ROWS)
-    squarez = random.randint(1,BOARD_ROWS)
-    while self.playerBoard.logicBoard[squarei][squarez] == 2:
-      squarei = random.randint(1,BOARD_ROWS)
-      squarez = random.randint(1,BOARD_ROWS)
-
-    coords = self.playerBoard.getCoordsForSquare(squarei,squarez)
-    return self.playerBoard.boardShot(coords)
     
   def create_board(self):
     self.playerBoard.boardview()
@@ -246,6 +248,16 @@ class GUI:
   def createComputerBoatsView(self):
     for each in self.computerBoats:
       each.draw()
+      
+  def sendShot(self):
+    squarei = random.randint(1,BOARD_ROWS)
+    squarez = random.randint(1,BOARD_ROWS)
+    while self.playerBoard.logicBoard[squarei][squarez] == 2:
+      squarei = random.randint(1,BOARD_ROWS)
+      squarez = random.randint(1,BOARD_ROWS)
+
+    coords = self.playerBoard.getCoordsForSquare(squarei,squarez)
+    return self.playerBoard.boardShot(coords)
     
   def createBoats(self):
     self.playerBoard = Board(self.uiInterface)
@@ -280,12 +292,11 @@ class GUI:
 
     #MAIN MENU
     self.mainMenu()
-         
     # STRATEGY PANEL
     self.strategyPanel()
     # PLAYING PANEL
     self.playingPanel()
     # WINNER PANEL
     self.winnerPanel()
-      
+    
     pygame.quit()

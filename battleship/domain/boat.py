@@ -20,6 +20,15 @@ class Boat:
     self.shots = 0
     self.img = pygame.transform.scale(img,(self.width,self.width*size))
     
+  def reInit(self):
+    self.position = self.initialPosition
+    self.view = None
+    self.isAdded = False
+    self.boardSquare = (-1,-1)
+    self.shots = 0
+    if self.align == 'Horizontal':
+      self.changeAlign()
+    
   def changeAlign(self):
     if not self.isAdded:
       self.width,self.height = self.height, self.width
@@ -29,7 +38,6 @@ class Boat:
       else:
         self.align = 'Vertical'
         self.img = pygame.transform.rotate(self.img, -90)
-        #self.img = pygame.transform.scale(self.img,(SQUARE_SIZE,SQUARE_SIZE*self.size))
     else:
       pass
     
