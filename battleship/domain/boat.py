@@ -47,7 +47,7 @@ class Boat:
   def draw(self):
     x = y = None
     if self.boardSquare[0] != -1:
-      boatRect = self.board.board[self.boardSquare[0]][self.boardSquare[1]]
+      boatRect = self.board.boardDomain.getFromBoard(self.boardSquare[0],self.boardSquare[1])
       x=boatRect.x
       y=boatRect.y
     if x != None:

@@ -2,7 +2,7 @@ import random
 import time
 import pygame
 pygame.init()
-from domain.board import *
+from logicalStuff.boardLogic import *
 from domain.boat import *
 from utils.constants import *
 
@@ -22,6 +22,10 @@ class GUI:
     self.debug = False
     self.message = ''
     
+  def addBoards(self):
+    self.playerBoard = BoardLogic(self.uiInterface)
+    self.computerBoard = BoardLogic(self.uiInterface)
+    
   def playerName(self,playerName):
     self.playerName = playerName
     
@@ -32,12 +36,12 @@ class GUI:
     self.inWinner = False
     
   def spawnRandomBoats(self, boardUse:Board, boats:list):
-    boardUse.clearBoard()
+    boardUse.boardDomain.clearBoard()
     for each in boats:
       each.reInit()
     boardUse.boardview()
     for each in boats:
-      square = self.spawnBoat(boardUse,each)
+      self.spawnBoat(boardUse,each)
       each.draw()
       boardUse.verifyCoordsinSquare(each)
       
@@ -105,7 +109,7 @@ class GUI:
               break
             
             #START BUTTON
-            if WIDTH/2-100 <= mousePos[0] <= WIDTH/2+28 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16 and self.playerBoard.ones == self.playerBoard.oneNeeded: 
+            if WIDTH/2-100 <= mousePos[0] <= WIDTH/2+28 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16 and self.playerBoard.readyStart: 
               self.inStrategy = False
               self.isPlaying = True
               break
@@ -146,7 +150,7 @@ class GUI:
       self.uiInterface.blit(STRATEGY_PANEL,(WIDTH/2-120,50))
       self.uiInterface.blit(SHUFFLE_BUTTON,(130,HEIGHT-120))
       
-      if self.playerBoard.ones == self.playerBoard.oneNeeded:
+      if self.playerBoard.readyStart:
         self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
       pygame.display.update() # UPDATE GAME WINDOW
     
@@ -156,6 +160,9 @@ class GUI:
     if self.isPlaying:
       self.computerBoard.boardview()
       self.spawnRandomBoats(self.computerBoard,self.computerBoats)
+      
+      self.playerBoard.setSquareSize(SQUARE_SIZE_MINI)
+      self.computerBoard.setSquareSize(SQUARE_SIZE_MINI)
       
       for each in self.playerBoats:
         each.setSquareSize(SQUARE_SIZE_MINI)
@@ -169,7 +176,7 @@ class GUI:
         self.uiInterface.blit(self.message,(120+SQUARE_SIZE_MINI+40,600))
         self.endtime = time.time()
         if self.endtime - self.start_time > 2:
-          self.message = self.sendShot()
+          self.message = self.playerBoard.sendShot()
           self.message = BIG_FONT.render(self.message,True,COLOR_WHITE)
           self.turn = 'Player'
       if self.turn == 'Player' and self.message != '':
@@ -201,10 +208,6 @@ class GUI:
           if self.debug:
             if event.key == pygame.K_F2:
               self.winner = 2
-            if event.key == pygame.K_SPACE:
-              self.playerBoard.boatShots = self.playerBoard.oneNeeded - 1
-            if event.key == pygame.K_F3:
-              self.computerBoard.boatShots = self.computerBoard.oneNeeded - 1
               
       #CREATE EMPTY BOARD
       self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
@@ -223,9 +226,9 @@ class GUI:
       
       pygame.display.update() #
       
-      if self.computerBoard.boatShots == self.computerBoard.oneNeeded:
+      if self.computerBoard.verifyWinner:
         self.winner = 1 #PLAYER
-      elif self.playerBoard.boatShots == self.playerBoard.oneNeeded:
+      elif self.playerBoard.verifyWinner:
         self.winner = 2 #COMPUTER
       
       if self.winner != None:
@@ -270,19 +273,9 @@ class GUI:
   def createComputerBoatsView(self):
     for each in self.computerBoats:
       each.draw()
-      
-  def sendShot(self):
-    squarei = random.randint(1,BOARD_ROWS)
-    squarez = random.randint(1,BOARD_ROWS)
-    while self.playerBoard.logicBoard[squarei][squarez] == 2:
-      squarei = random.randint(1,BOARD_ROWS)
-      squarez = random.randint(1,BOARD_ROWS)
-
-    coords = self.playerBoard.getCoordsForSquare(squarei,squarez)
-    return self.playerBoard.boardShot(coords)
     
   def createBoats(self):
-    self.playerBoard = Board(self.uiInterface)
+    
     self.boatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
     self.boatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
     self.boatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
@@ -291,7 +284,6 @@ class GUI:
     
     self.playerBoats = [self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol]
     
-    self.computerBoard = Board(self.uiInterface)
     self.computerBoatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
     self.computerBoatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
     self.computerBoatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
@@ -311,6 +303,7 @@ class GUI:
     self.uiInterface = pygame.display.set_mode((WIDTH,HEIGHT))
     pygame.display.set_caption('BattleShip - Minigame')
     pygame.display.set_icon(ICON)
+    self.addBoards()
 
     #MAIN MENU
     self.mainMenu()
