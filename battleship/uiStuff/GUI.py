@@ -37,19 +37,24 @@ class GUI:
       each.reInit()
     boardUse.boardview()
     for each in boats:
-      print(each.name)
-      while each.boardSquare[0] == -1:
-        number = random.randint(1,100)
-        if number % 2 == 0:
-          each.changeAlign()
-        each.position = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
-        square = boardUse.getSquareForCoords(each.position)
-        print("SQUARE: ",square, each.align)
-        if boardUse.logicBoard[square[0]][square[1]] != 0:
-          print(each.name, " USED")
-        each.draw()
-        boardUse.verifyCoordsinSquare(each)
-    
+      square = self.spawnBoat(boardUse,each)
+      each.draw()
+      boardUse.verifyCoordsinSquare(each)
+      
+  def spawnBoat(self,boardUse,boat):
+    square = (-1,-1)
+    added = False
+    while not added:
+      number = random.randint(1,100)
+      if number % 2 == 0:
+        boat.changeAlign()
+      positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
+      square = boardUse.getSquareForCoords(positionRandom)
+      if boardUse.checkValability(boat,boat.align,square[0],square[1]):
+        added = True
+        boat.boardSquare = square
+        boat.position = boardUse.getCoordsForSquare(square[0],square[1])
+        return square
   #MAIN MENU 
   def mainMenu(self):
     while self.isOnMenu:
@@ -120,15 +125,19 @@ class GUI:
             else:
               self.rect = None
         if event.type == pygame.MOUSEBUTTONUP:
-          if self.rect != None:
-            self.playerBoard.verifyCoordsinSquare(self.rect)
+          if self.rect != None and self.mouseDown == True:
+            boat = self.rect
+            square = self.playerBoard.getSquareForCoords(mousePos)
+            if self.playerBoard.checkValability(boat,boat.align,square[0],square[1]):
+              boat.boardSquare = square
+              boat.position = self.playerBoard.getCoordsForSquare(square[0],square[1])
+              self.playerBoard.verifyCoordsinSquare(boat)
+            else:
+              boat.reInit()
           self.mouseDown = False
           self.rect = None
         if event.type == pygame.MOUSEMOTION and self.mouseDown and self.rect != None:
           self.rect.position = mousePos
-        if event.type == pygame.KEYDOWN:
-          if event.key == pygame.K_F1:
-            self.spawnRandomBoats(self.playerBoard,self.playerBoats)
             
       self.create_board()
       
@@ -191,7 +200,7 @@ class GUI:
             self.debug = not self.debug
           if self.debug:
             if event.key == pygame.K_F2:
-              self.winner = 1
+              self.winner = 2
             if event.key == pygame.K_SPACE:
               self.playerBoard.boatShots = self.playerBoard.oneNeeded - 1
             if event.key == pygame.K_F3:

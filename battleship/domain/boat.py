@@ -18,7 +18,8 @@ class Boat:
     self.boardSquare = (-1,-1)
     self.board = Board
     self.shots = 0
-    self.img = pygame.transform.scale(img,(self.width,self.width*size))
+    if self.uiInterface != 'Console':
+      self.img = pygame.transform.scale(img,(self.width,self.width*size))
     
   def reInit(self):
     self.position = self.initialPosition
@@ -34,10 +35,12 @@ class Boat:
       self.width,self.height = self.height, self.width
       if self.align == 'Vertical':
         self.align = 'Horizontal'
-        self.img = pygame.transform.rotate(self.img, 90)
+        if self.uiInterface != 'Console':
+          self.img = pygame.transform.rotate(self.img, 90)
       else:
         self.align = 'Vertical'
-        self.img = pygame.transform.rotate(self.img, -90)
+        if self.uiInterface != 'Console':
+          self.img = pygame.transform.rotate(self.img, -90)
     else:
       pass
     
@@ -61,13 +64,15 @@ class Boat:
     if self.width == SQUARE_SIZE:
       self.width = size
       self.height = self.width * self.size
-      self.img = pygame.transform.scale(self.img,(self.width,self.width*self.size))
+      if self.uiInterface != 'Console':
+        self.img = pygame.transform.scale(self.img,(self.width,self.width*self.size))
     else:
       self.height = size
       self.width = self.height * self.size
-      self.img = pygame.transform.rotate(self.img, -90)
-      self.img = pygame.transform.scale(self.img,(self.height,self.height*self.size))
-      self.img = pygame.transform.rotate(self.img, 90)
+      if self.uiInterface != 'Console':
+        self.img = pygame.transform.rotate(self.img, -90)
+        self.img = pygame.transform.scale(self.img,(self.height,self.height*self.size))
+        self.img = pygame.transform.rotate(self.img, 90)
       
   def __str__(self) -> str:
     return f"{self.name} | {self.position} | {self.boardSquare} | {self.view}"
