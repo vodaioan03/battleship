@@ -19,7 +19,13 @@ class Boat:
     self.board = Board
     self.shots = 0
     if self.uiInterface != 'Console':
-      self.img = pygame.transform.scale(img,(self.width,self.width*size))
+      self.setImg(pygame.transform.scale(img,(self.width,self.width*size)))
+      
+  def setImg(self,img):
+    self.img = img
+    
+  def setView(self,view):
+    self.view = view
     
   def reInit(self):
     self.position = self.initialPosition
@@ -27,22 +33,14 @@ class Boat:
     self.isAdded = False
     self.boardSquare = (-1,-1)
     self.shots = 0
-    if self.align == 'Horizontal':
-      self.changeAlign()
     
-  def changeAlign(self):
-    if not self.isAdded:
-      self.width,self.height = self.height, self.width
-      if self.align == 'Vertical':
-        self.align = 'Horizontal'
-        if self.uiInterface != 'Console':
-          self.img = pygame.transform.rotate(self.img, 90)
-      else:
-        self.align = 'Vertical'
-        if self.uiInterface != 'Console':
-          self.img = pygame.transform.rotate(self.img, -90)
-    else:
-      pass
+    
+  def setAlign(self,align):
+    self.width,self.height = self.height, self.width
+    self.align = align
+    
+  def setBoardSquare(self,i,z):
+    self.boardSquare = (i,z)
     
   def draw(self):
     x = y = None
@@ -51,28 +49,25 @@ class Boat:
       x=boatRect.x
       y=boatRect.y
     if x != None:
-      self.view = pygame.draw.rect(self.uiInterface,self.color,[x,y,self.width,self.height],1)
+      self.setView(pygame.draw.rect(self.uiInterface,self.color,[x,y,self.width,self.height],1))
       self.uiInterface.blit(self.img,(x,y))
     else:
-      self.view = pygame.draw.rect(self.uiInterface,self.color,[self.position[0],self.position[1],self.width,self.height],1)
+      self.setView(pygame.draw.rect(self.uiInterface,self.color,[self.position[0],self.position[1],self.width,self.height],1))
       self.uiInterface.blit(self.img,(self.position[0],self.position[1]))
     
-  def setBoardSquare(self,i,z):
-    self.boardSquare = (i,z)
-    
   def setSquareSize(self,size):
-    if self.width == SQUARE_SIZE:
+    if self.width == SQUARE_SIZE or self.width == SQUARE_SIZE_MINI:
       self.width = size
       self.height = self.width * self.size
       if self.uiInterface != 'Console':
-        self.img = pygame.transform.scale(self.img,(self.width,self.width*self.size))
+        self.setImg(pygame.transform.scale(self.img,(self.width,self.width*self.size)))
     else:
       self.height = size
       self.width = self.height * self.size
       if self.uiInterface != 'Console':
-        self.img = pygame.transform.rotate(self.img, -90)
-        self.img = pygame.transform.scale(self.img,(self.height,self.height*self.size))
-        self.img = pygame.transform.rotate(self.img, 90)
+        self.setImg(pygame.transform.rotate(self.img, -90))
+        self.setImg(pygame.transform.scale(self.img,(self.height,self.height*self.size)))
+        self.setImg(pygame.transform.rotate(self.img, 90))
       
   def __str__(self) -> str:
     return f"{self.name} | {self.position} | {self.boardSquare} | {self.view}"

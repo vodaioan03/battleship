@@ -33,13 +33,11 @@ class BoardLogic:
     
   def checkValability(self,boat,align,i,z):
     if i == -1 or z == -1:
-      print("error in -1")
       return False
     if align == 'Vertical':
       if i+boat.size-1 >= BOARD_COL+1:
         return False
       for k in range(0,boat.size):
-        
         if self.boardDomain.getFromLogicalBoard(i+k,z) != 0:
           return False
     elif align == 'Horizontal':
@@ -59,11 +57,13 @@ class BoardLogic:
     error = not error
     if self.boardDomain.getFromLogicalBoard(i,z) == 0 and error == False:
       if boat.align == 'Vertical' and i+boat.size-1 < BOARD_COL+1:
+        boat.setBoardSquare(i,z)
         for k in range(0,boat.size):
           self.boardDomain.setValueToLogicalBoard(i+k,z, boat)
           self.boardDomain.addOnes
         boat.isAdded = True
       elif boat.align == 'Horizontal' and z+boat.size-1 < BOARD_ROWS+1:
+        boat.setBoardSquare(i,z)
         for k in range(0,boat.size):
           self.boardDomain.setValueToLogicalBoard(i,z+k,boat)
           self.boardDomain.addOnes
@@ -82,11 +82,11 @@ class BoardLogic:
       if boat.align == 'Vertical':
         for k in range(0,boat.size):
           self.boardDomain.setValueToLogicalBoard(boat.boardSquare[0]+k,boat.boardSquare[1],0)
-          self.boardDomain.addOnes
+          self.boardDomain.deleteOnes
       elif boat.align == 'Horizontal':
         for k in range(0,boat.size):
           self.boardDomain.setValueToLogicalBoard(boat.boardSquare[0],boat.boardSquare[1]+k,0)
-          self.boardDomain.addOnes
+          self.boardDomain.deleteOnes
     boat.setBoardSquare(-1,-1)
 
       
@@ -123,9 +123,6 @@ class BoardLogic:
         pos = (self.boardDomain.getFromBoard(i,z,'x'),self.boardDomain.getFromBoard(i,z,'y'))
         if pos[0] <= positiom[0] and pos[0]+self.boardDomain.getSquareSize > positiom[0]:
           if pos[1] <= positiom[1] and pos[1]+self.boardDomain.getSquareSize > positiom[1]:
-            print(i,z)
-            print(positiom)
-            print(pos)
             return i,z
     return -1,-1
 

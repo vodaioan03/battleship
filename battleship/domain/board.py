@@ -74,6 +74,10 @@ class Board:
   def addOnes(self):
     self.ones += 1
     
+  @property
+  def deleteOnes(self):
+    self.ones -= 1
+    
   def addTotalShots(self,value=-1):
     if value != -1:
       self.totalShots += value

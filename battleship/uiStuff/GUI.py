@@ -3,6 +3,7 @@ import time
 import pygame
 pygame.init()
 from logicalStuff.boardLogic import *
+from logicalStuff.boatLogic import *
 from domain.boat import *
 from utils.constants import *
 
@@ -39,24 +40,27 @@ class GUI:
     boardUse.boardDomain.clearBoard()
     for each in boats:
       each.reInit()
+      if each.align == 'Horizontal':
+        self.changeAlign(each)
     boardUse.boardview()
     for each in boats:
       self.spawnBoat(boardUse,each)
       each.draw()
       boardUse.verifyCoordsinSquare(each)
       
-  def spawnBoat(self,boardUse,boat):
+  def spawnBoat(self,boardUse,boat:Boat):
     square = (-1,-1)
     added = False
     while not added:
       number = random.randint(1,100)
       if number % 2 == 0:
-        boat.changeAlign()
+        self.changeAlign(boat)
+        print(boat.align)
       positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
       square = boardUse.getSquareForCoords(positionRandom)
       if boardUse.checkValability(boat,boat.align,square[0],square[1]):
         added = True
-        boat.boardSquare = square
+        boat.setBoardSquare(square[0],square[1])
         boat.position = boardUse.getCoordsForSquare(square[0],square[1])
         return square
   #MAIN MENU 
@@ -125,7 +129,7 @@ class GUI:
           elif event.button == 3:
             self.rect = self.verifyPositionBoat(mousePos)
             if self.rect != None and self.rect.isAdded != True:
-              self.rect.changeAlign()
+              self.changeAlign(self.rect)
             else:
               self.rect = None
         if event.type == pygame.MOUSEBUTTONUP:
@@ -138,6 +142,8 @@ class GUI:
               self.playerBoard.verifyCoordsinSquare(boat)
             else:
               boat.reInit()
+              if boat.align == 'Horizontal':
+                self.changeAlign(boat)
           self.mouseDown = False
           self.rect = None
         if event.type == pygame.MOUSEMOTION and self.mouseDown and self.rect != None:
@@ -273,9 +279,23 @@ class GUI:
   def createComputerBoatsView(self):
     for each in self.computerBoats:
       each.draw()
+      
+  def changeAlign(self,boat:Boat):
+    if not boat.isAdded:
+      if boat.align == 'Vertical':
+        boat.setAlign('Horizontal')
+        boat.setImg(pygame.transform.rotate(boat.img, 90))
+      else:
+        boat.setAlign('Vertical')
+        boat.setImg(pygame.transform.rotate(boat.img, -90))
+    else:
+      pass
     
   def createBoats(self):
+    self.createPlayerBoats()
+    self.createComputerBoats()
     
+  def createPlayerBoats(self):
     self.boatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
     self.boatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
     self.boatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
@@ -283,7 +303,7 @@ class GUI:
     self.boatPatrol = Boat('Patrol',IMG_BOAT_PATROL,BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self.playerBoard) 
     
     self.playerBoats = [self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol]
-    
+  def createComputerBoats(self):
     self.computerBoatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
     self.computerBoatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
     self.computerBoatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
@@ -291,7 +311,6 @@ class GUI:
     self.computerBoatPatrol = Boat('Patrol',IMG_BOAT_PATROL,BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self.computerBoard) 
     
     self.computerBoats = [self.computerBoatCarrier,self.computerBoatBattleship,self.computerBoatDestroyer,self.computerBoatSubmarine,self.computerBoatPatrol]
-    
     
   def verifyPositionBoat(self,mousePos):
     for each in self.playerBoats:
