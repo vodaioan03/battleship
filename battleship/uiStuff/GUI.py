@@ -3,15 +3,12 @@ import time
 import pygame
 pygame.init()
 from logicalStuff.boardLogic import *
-from logicalStuff.boatLogic import *
 from domain.boat import *
 from utils.constants import *
 
 class GUI:
   
   def __init__(self) -> None:
-    self.playerBoats = []
-    self.computerBoats = []
     self.isOnMenu= True
     self.inStrategy = False
     self.isPlaying = False
@@ -42,10 +39,10 @@ class GUI:
       each.reInit()
       if each.align == 'Horizontal':
         self.changeAlign(each)
-    boardUse.boardview()
+    self.boardview(boardUse)
     for each in boats:
       self.spawnBoat(boardUse,each)
-      each.draw()
+      self.draw(boardUse,each)
       boardUse.verifyCoordsinSquare(each)
       
   def spawnBoat(self,boardUse,boat:Boat):
@@ -55,7 +52,6 @@ class GUI:
       number = random.randint(1,100)
       if number % 2 == 0:
         self.changeAlign(boat)
-        print(boat.align)
       positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
       square = boardUse.getSquareForCoords(positionRandom)
       if boardUse.checkValability(boat,boat.align,square[0],square[1]):
@@ -120,7 +116,7 @@ class GUI:
             
             #SHUFFLE BUTTON
             if 130 <= mousePos[0] <= 180 and HEIGHT-120 <= mousePos[1] <= HEIGHT-70: 
-              self.spawnRandomBoats(self.playerBoard,self.playerBoats)
+              self.spawnRandomBoats(self.playerBoard,self.playerBoard.getBoats)
             self.rect = self.verifyPositionBoat(mousePos)
             
             if self.rect != None:
@@ -160,20 +156,37 @@ class GUI:
         self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
       pygame.display.update() # UPDATE GAME WINDOW
     
-    
+  def draw(self,boardUse, boat:Boat):
+    x = y = None
+    boardSquare = boat.getBoardSquare
+    position = boat.getPosition
+    if boardSquare[0] != -1:
+      boatRect = boardUse.boardDomain.getFromBoard(boardSquare[0],boardSquare[1])
+      x=boatRect.x
+      y=boatRect.y
+    if x != None:
+      boat.setView(pygame.draw.rect(self.uiInterface,boat.getColor,[x,y,boat.getWidth,boat.getHeight],1))
+      self.uiInterface.blit(boat.getImg,(x,y))
+    else:
+      boat.setView(pygame.draw.rect(self.uiInterface,boat.getColor,[position[0],position[1],boat.getWidth,boat.getHeight],1))
+      self.uiInterface.blit(boat.getImg,(position[0],position[1]))
+  
+  def changeSquareSize(self,boat:Boat,squareSize):
+    boat.setBoatSquareSize(squareSize)
+    boat.setImg(pygame.transform.scale(boat.getImg,(boat.getWidth,boat.getHeight)))
     
   def playingPanel(self):
     if self.isPlaying:
-      self.computerBoard.boardview()
-      self.spawnRandomBoats(self.computerBoard,self.computerBoats)
+      self.boardview(self.computerBoard)
+      self.spawnRandomBoats(self.computerBoard,self.computerBoard.getBoats)
       
       self.playerBoard.setSquareSize(SQUARE_SIZE_MINI)
       self.computerBoard.setSquareSize(SQUARE_SIZE_MINI)
       
-      for each in self.playerBoats:
-        each.setSquareSize(SQUARE_SIZE_MINI)
-      for each in self.computerBoats:
-        each.setSquareSize(SQUARE_SIZE_MINI)
+      for each in self.playerBoard.getBoats:
+        self.changeSquareSize(each,SQUARE_SIZE_MINI)
+      for each in self.computerBoard.getBoats:
+        self.changeSquareSize(each,SQUARE_SIZE_MINI)
     while self.isPlaying:
       self.uiInterface.fill(COLOR_BLACK)
       self.uiInterface.blit(OCEAN_STORM,(0,0))
@@ -216,8 +229,8 @@ class GUI:
               self.winner = 2
               
       #CREATE EMPTY BOARD
-      self.playerBoard.boardPlaying(700,150,PLAYER_BOARD)
-      self.computerBoard.boardPlaying(80,150,COMPUTER_BOARD)
+      self.boardPlaying(self.playerBoard,700,150,PLAYER_BOARD)
+      self.boardPlaying(self.computerBoard,80,150,COMPUTER_BOARD)
       
       #CREATE VIEW BOATS
       self.createBoatsView()
@@ -267,18 +280,17 @@ class GUI:
       pygame.display.update() #
     
   def create_board(self):
-    self.playerBoard.boardview()
-    #pygame.draw.rect(self.uiInterface,COLOR_BLUE,[0,95,300,500])
+    self.boardview(self.playerBoard)
     self.uiInterface.blit(TEXTURE,(0,95))
     self.createBoatsView()
     
   def createBoatsView(self):
-    for each in self.playerBoats:
-      each.draw()
+    for each in self.playerBoard.getBoats:
+      self.draw(self.playerBoard,each)
   
   def createComputerBoatsView(self):
-    for each in self.computerBoats:
-      each.draw()
+    for each in self.computerBoard.getBoats:
+      self.draw(self.computerBoard,each)
       
   def changeAlign(self,boat:Boat):
     if not boat.isAdded:
@@ -296,27 +308,60 @@ class GUI:
     self.createComputerBoats()
     
   def createPlayerBoats(self):
-    self.boatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
-    self.boatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
-    self.boatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.playerBoard)
-    self.boatSubmarine = Boat('Submarine',IMG_BOAT_SUBMARINE,BOAT_SUBMARINE,100,375,COLOR_BLACK,self.uiInterface,self.playerBoard)
-    self.boatPatrol = Boat('Patrol',IMG_BOAT_PATROL,BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self.playerBoard) 
+    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.playerBoard,IMG_BOAT_CARRIER)
+    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.playerBoard,IMG_BOAT_BATTLESHIP)
+    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.playerBoard,IMG_BOAT_DESTROYER)
+    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,self.uiInterface,self.playerBoard,IMG_BOAT_SUBMARINE)
+    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self.playerBoard,IMG_BOAT_PATROL) 
     
-    self.playerBoats = [self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol]
+    self.playerBoard.setBoats([self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol])
+    
+    self.setImagesBoats(self.playerBoard.getBoats)
+  
   def createComputerBoats(self):
-    self.computerBoatCarrier = Boat('Carrier',IMG_BOAT_CARRIER,BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
-    self.computerBoatBattleship = Boat('Battleship',IMG_BOAT_BATTLESHIP,BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
-    self.computerBoatDestroyer = Boat('Destroyer',IMG_BOAT_DESTROYER,BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.computerBoard)
-    self.computerBoatSubmarine = Boat('Submarine',IMG_BOAT_SUBMARINE,BOAT_SUBMARINE,100,375,COLOR_BLACK,self.uiInterface,self.computerBoard)
-    self.computerBoatPatrol = Boat('Patrol',IMG_BOAT_PATROL,BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self.computerBoard) 
+    self.computerBoatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self.computerBoard,IMG_BOAT_CARRIER)
+    self.computerBoatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self.computerBoard,IMG_BOAT_BATTLESHIP)
+    self.computerBoatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self.computerBoard,IMG_BOAT_DESTROYER)
+    self.computerBoatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,self.uiInterface,self.computerBoard,IMG_BOAT_SUBMARINE)
+    self.computerBoatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self.computerBoard,IMG_BOAT_PATROL) 
     
-    self.computerBoats = [self.computerBoatCarrier,self.computerBoatBattleship,self.computerBoatDestroyer,self.computerBoatSubmarine,self.computerBoatPatrol]
+    self.computerBoard.setBoats([self.computerBoatCarrier,self.computerBoatBattleship,self.computerBoatDestroyer,self.computerBoatSubmarine,self.computerBoatPatrol])
+    
+    self.setImagesBoats(self.computerBoard.getBoats)
+    
+  def setImagesBoats(self,boats:list):
+    for each in boats:
+      each.setImg(pygame.transform.scale(each.getImg,(each.getWidth,each.getHeight)))
+    
     
   def verifyPositionBoat(self,mousePos):
-    for each in self.playerBoats:
+    for each in self.playerBoard.getBoats:
       if each.position[1] <= mousePos[1] <= (each.position[1] + each.height) and each.position[0] <= mousePos[0] <= (each.position[0] + each.width):
         return each
     return None
+  
+  
+  def boardview(self,boardUse:Board):
+    boardUse.emptyBoard
+    for i in range(1,BOARD_COL+1):
+      boardUse.addToBoard([[]])
+      for z in range(1,BOARD_ROWS+1):
+        pygame.draw.rect(self.uiInterface, COLOR_BLUE,[(SQUARE_SIZE)*z+340,(SQUARE_SIZE)*i+40,SQUARE_SIZE-1,SQUARE_SIZE-1])
+        boardUse.addToBoard(pygame.draw.rect(self.uiInterface,(0,0,0),[(SQUARE_SIZE)*z+340,(SQUARE_SIZE)*i+40,SQUARE_SIZE,SQUARE_SIZE],1),i)
+    pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE+340,SQUARE_SIZE+40,BOARD_COL*SQUARE_SIZE,BOARD_ROWS*SQUARE_SIZE],1)
+    
+  def boardPlaying(self,boardUse:Board,xAdd,yAdd,text): 
+    boardUse.setSquareSize(SQUARE_SIZE_MINI)
+    self.uiInterface.blit(text,(xAdd+SQUARE_SIZE_MINI+40,yAdd))
+    boardUse.emptyBoard
+    for i in range(1,BOARD_COL+1):
+      boardUse.addToBoard([[]])
+      for z in range(1,BOARD_ROWS+1):
+        pygame.draw.rect(self.uiInterface, COLOR_BLUE,[(SQUARE_SIZE_MINI)*z+xAdd,(SQUARE_SIZE_MINI)*i+yAdd,SQUARE_SIZE_MINI-1,SQUARE_SIZE_MINI-1])
+        boardUse.addToBoard(pygame.draw.rect(self.uiInterface,(0,0,0),[(SQUARE_SIZE_MINI)*z+xAdd,(SQUARE_SIZE_MINI)*i+yAdd,SQUARE_SIZE_MINI,SQUARE_SIZE_MINI],1),i)
+    pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE_MINI+xAdd,SQUARE_SIZE_MINI+yAdd,BOARD_COL*SQUARE_SIZE_MINI,BOARD_ROWS*SQUARE_SIZE_MINI],1)
+  
+  
   
   def startGame(self):
     self.uiInterface = pygame.display.set_mode((WIDTH,HEIGHT))

@@ -1,7 +1,6 @@
 from utils.constants import *
 from domain.boat import *
 from domain.board import *
-import pygame
 import random
 
 class BoardLogic:
@@ -9,27 +8,6 @@ class BoardLogic:
   def __init__(self,ui) -> None:
     self.boardDomain = Board(ui)
     self.uiInterface = ui
-    
-    
-  def boardview(self):
-    self.boardDomain.emptyBoard
-    for i in range(1,BOARD_COL+1):
-      self.boardDomain.addToBoard([[]])
-      for z in range(1,BOARD_ROWS+1):
-        pygame.draw.rect(self.uiInterface, COLOR_BLUE,[(SQUARE_SIZE)*z+340,(SQUARE_SIZE)*i+40,SQUARE_SIZE-1,SQUARE_SIZE-1])
-        self.boardDomain.addToBoard(pygame.draw.rect(self.uiInterface,(0,0,0),[(SQUARE_SIZE)*z+340,(SQUARE_SIZE)*i+40,SQUARE_SIZE,SQUARE_SIZE],1),i)
-    pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE+340,SQUARE_SIZE+40,BOARD_COL*SQUARE_SIZE,BOARD_ROWS*SQUARE_SIZE],1)
-    
-  def boardPlaying(self,xAdd,yAdd,text): 
-    self.squareSize = SQUARE_SIZE_MINI
-    self.uiInterface.blit(text,(xAdd+SQUARE_SIZE_MINI+40,yAdd))
-    self.boardDomain.emptyBoard
-    for i in range(1,BOARD_COL+1):
-      self.boardDomain.addToBoard([[]])
-      for z in range(1,BOARD_ROWS+1):
-        pygame.draw.rect(self.uiInterface, COLOR_BLUE,[(SQUARE_SIZE_MINI)*z+xAdd,(SQUARE_SIZE_MINI)*i+yAdd,SQUARE_SIZE_MINI-1,SQUARE_SIZE_MINI-1])
-        self.boardDomain.addToBoard(pygame.draw.rect(self.uiInterface,(0,0,0),[(SQUARE_SIZE_MINI)*z+xAdd,(SQUARE_SIZE_MINI)*i+yAdd,SQUARE_SIZE_MINI,SQUARE_SIZE_MINI],1),i)
-    pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE_MINI+xAdd,SQUARE_SIZE_MINI+yAdd,BOARD_COL*SQUARE_SIZE_MINI,BOARD_ROWS*SQUARE_SIZE_MINI],1)
     
   def checkValability(self,boat,align,i,z):
     if i == -1 or z == -1:
@@ -49,6 +27,19 @@ class BoardLogic:
     else:
       return False
     return True
+  
+  def addToBoard(self,entity,i=-1):
+    self.boardDomain.addToBoard(entity,i)
+    
+  @property
+  def emptyBoard(self):
+    self.boardDomain.emptyBoard
+  @property
+  def getBoats(self):
+    return self.boardDomain.getBoats
+  
+  def setBoats(self,boats):
+    self.boardDomain.setBoats(boats)
     
   def verifyCoordsinSquare(self,boat:Boat):
     error = False

@@ -1,11 +1,9 @@
 from utils.constants import *
 from domain.boat import *
-import pygame
 
 class Board:
   
   def __init__(self,ui) -> None:
-    print("Init board")
     self.logicBoard = [[0 for _ in range(BOARD_COL+1)] for _ in range(BOARD_ROWS+1)]
     self.logicBoard[0] = []
     self.board = [[]]
@@ -15,6 +13,7 @@ class Board:
     self.totalShots = 0
     self.boatShots = 0
     self.squareSize = SQUARE_SIZE
+    self.boats = []
     
   def clearBoard(self):
     self.logicBoard = [[0 for _ in range(BOARD_COL+1)] for _ in range(BOARD_ROWS+1)]
@@ -49,6 +48,12 @@ class Board:
   @property
   def getSquareSize(self):
     return self.squareSize
+  @property
+  def getBoats(self):
+    return self.boats
+  
+  def setBoats(self,boats):
+    self.boats = boats
   
   def setSquareSize(self,size):
     self.squareSize = size
