@@ -114,6 +114,9 @@ class BoardLogic:
     for each in self.boardDomain.getBoats:
       if each.getName.lower() == name:
         return each
+  
+  def getCoords(self,i,z):
+    return (self.boardDomain.getFromBoard(i,z,'x'),self.boardDomain.getFromBoard(i,z,'y'))
           
   def getSquareForCoords(self,positiom):
     for i in range(1,BOARD_COL+1):
@@ -167,7 +170,6 @@ class BoardLogic:
   def spawnBoat(self,boat:Boat):
     square = (-1,-1)
     if self.boardDomain.getBoard != [[]]:
-      print("intr")
       positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
       square = self.getSquareForCoords(positionRandom)
     else:
@@ -175,7 +177,6 @@ class BoardLogic:
     if self.checkValability(boat,boat.align,square[0],square[1]):
       boat.setBoardSquare(square[0],square[1])
       if self.boardDomain.getBoard != [[]]:
-        print("intr")
         boat.position = self.getCoordsForSquare(square[0],square[1])
       self.verifyCoordsinSquare(boat)
       return True

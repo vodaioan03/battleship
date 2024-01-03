@@ -161,8 +161,9 @@ class GUI:
   def addShotsOnMap(self,boardUse:Board):
     for i in range(1,BOARD_COL+1):
       for z in range(1,BOARD_ROWS+1):
-        if boardUse.getFromLogicalBoard(i,z) == 2:
-          x,y = boardUse.getFromBoard(i,z,'x'),boardUse.getFromBoard(i,z,'y')
+        if not boardUse.checkShoot((i,z)):
+          coords = boardUse.getCoords(i,z)
+          x,y = coords[0],coords[1]
           self.uiInterface.blit(EXPLODEICON,(x+5,y+5))
   
   def draw(self,boardUse, boat:Boat):
@@ -247,8 +248,8 @@ class GUI:
         self.createComputerBoatsView()
         
       #ADD SHOTS ON THE BOARD
-      self.computerBoard.addShotsOnMap()
-      self.playerBoard.addShotsOnMap()
+      self.addShotsOnMap(self.computerBoard)
+      self.addShotsOnMap(self.playerBoard)
       self.uiInterface.blit(QUITBUTTON , (WIDTH-140,HEIGHT-80)) 
       self.uiInterface.blit(COPYRIGHT,(20,HEIGHT-20))
       
