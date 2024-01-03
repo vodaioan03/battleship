@@ -38,7 +38,7 @@ class GUI:
     for each in boats:
       if each.getAlign == 'Horizontal':
         self.changeAlign(each)
-        each.setAlign('Vertical')
+        each.rotateAlign()
     self.boardview(boardUse)
     for boat in boats:
       added = False
@@ -46,10 +46,7 @@ class GUI:
         number = random.randint(1,100)
         if number % 2 == 0:
           self.changeAlign(boat)
-          if boat.getAlign == 'Horizontal':
-            boat.setAlign('Vertical')
-          else:
-            boat.setAlign('Horizontal')
+          boat.rotateAlign()
         added = boardUse.spawnBoat(boat)
       
   def changeAlign(self,boat:Boat):
@@ -129,10 +126,7 @@ class GUI:
             self.rect = self.playerBoard.verifyPositionBoat(mousePos)
             if self.rect != None and self.rect.isAdded != True:
               self.changeAlign(self.rect)
-              if self.rect.getAlign == 'Vertical':
-                self.rect.setAlign('Horizontal')
-              else:
-                self.rect.setAlign('Vertical')
+              self.rect.rotateAlign()
             else:
               self.rect = None
         if event.type == pygame.MOUSEBUTTONUP:
@@ -147,7 +141,7 @@ class GUI:
               boat.reInit()
               if boat.getAlign == 'Horizontal':
                 self.changeAlign(boat)
-                boat.setAlign('Vertical')
+                boat.rotateAlign()
           self.mouseDown = False
           self.rect = None
         if event.type == pygame.MOUSEMOTION and self.mouseDown and self.rect != None:
@@ -164,6 +158,13 @@ class GUI:
         self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
       pygame.display.update() # UPDATE GAME WINDOW
     
+  def addShotsOnMap(self,boardUse:Board):
+    for i in range(1,BOARD_COL+1):
+      for z in range(1,BOARD_ROWS+1):
+        if boardUse.getFromLogicalBoard(i,z) == 2:
+          x,y = boardUse.getFromBoard(i,z,'x'),boardUse.getFromBoard(i,z,'y')
+          self.uiInterface.blit(EXPLODEICON,(x+5,y+5))
+  
   def draw(self,boardUse, boat:Boat):
     x = y = None
     boardSquare = boat.getBoardSquare

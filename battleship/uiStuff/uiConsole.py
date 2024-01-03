@@ -10,11 +10,20 @@ class UI:
   def __init__(self) -> None:
     self.uiInterface = 'Console'
     self.isPlaying = False
+    self.afterStrategy = False
     self.commands = {}
+    self.boats = {}
+    self.turn = 'Player'
+    self.startTimer = 0
     
   def playerName(self,playerName):
     self.playerName = playerName
     
+  def changeTurn(self):
+    if self.turn == 'Player':
+      self.turn = 'Computer'
+    else:
+      self.turn = 'Player'
     
   #####################3FROM GUI ###################################
     
@@ -46,22 +55,31 @@ class UI:
   
   ## FUNCTIONS
   
-  def showBoard(self,command):
-    print("Show Board\n")
-    board = self.playerBoard.getLogicBoard
+  def showBoard(self,command,*args):
+    print("\n")
+    if len(command) != 2:
+      raise ValueError('Invalid Command or Parameters.')
+    if command[1] != 'player' and command[1] != 'computer':
+      raise ValueError('Invalid Player! Type <player> or <computer>.')
+    boardUse = self.playerBoard
+    if command[1] == 'computer':
+      boardUse = self.computerBoard
+    board = boardUse.getLogicBoard
     for i in board:
       if i != []:
         string = ''
         for j in range(1,len(i)):
           if isinstance(i[j],Boat):
             string += f'| {i[j].getName[0]} '
+          elif i[j] == 2:
+            string += f"| X "
           else:
             string += f'| {i[j]} '
         print(string)
-    pass
   
-  def addBoat(self,command):
-    print("Add boat")
+  def addBoat(self,command,*args):
+    if self.afterStrategy:
+      raise ValueError("Can't use this command after game started!")
     for i in range(len(command)):
       command[i].strip()
       command[i].lower()
@@ -73,7 +91,7 @@ class UI:
       if not command[2].isdigit() or not command[3].isdigit():
         raise ValueError('Invalid X or Y')
       if int(command[2]) > 10 or int(command[3]) > 10 or int(command[2]) < 1 or int(command[3]) < 1:
-        raise ValueError('X and Y bigger than 10.')
+        raise ValueError('X and Y bigger than 10 or smaller than 1.')
       boat = self.playerBoard.getBoat(command[1])
       square = (int(command[2]),int(command[3]))
       if self.playerBoard.checkValability(boat,boat.align,square[0],square[1]) and boat.getBoardSquare == (-1,-1):
@@ -82,8 +100,9 @@ class UI:
       else:
         raise ValueError('Boat already added or position is already ocuppied.')
   
-  def deleteBoat(self,command):
-    print("delete boat")
+  def deleteBoat(self,command,*args):
+    if self.afterStrategy:
+      raise ValueError("Can't use this command after game started!")
     for i in range(len(command)):
       command[i].strip()
       command[i].lower()
@@ -98,8 +117,9 @@ class UI:
       else:
         raise ValueError("Boat isn't added to Board!")
   
-  def rotateBoat(self,command):
-    print("Rottate boat")
+  def rotateBoat(self,command,*args):
+    if self.afterStrategy:
+      raise ValueError("Can't use this command after game started!")
     for i in range(len(command)):
       command[i].strip()
       command[i].lower()
@@ -114,19 +134,73 @@ class UI:
       boat.rotateAlign()
       print('Boat has been rotated!')
   
-  def shuffle(self,command):
-    print("Shuffle")
-    pass
+  def shuffle(self,command,*args):
+    if self.afterStrategy:
+      raise ValueError("Can't use this command after game started!")
+    boardUse = args[0]
+    boardUse.boardReinit()
+    for each in boardUse.getBoats:
+      if each.getAlign == 'Horizontal':
+        each.rotateAlign()
+    for boat in boardUse.getBoats:
+      added = False
+      while not added:
+        number = random.randint(1,100)
+        if number % 2 == 0:
+          boat.rotateAlign()
+        added = boardUse.spawnBoat(boat)
+        
+  def startPlaying(self,command,*args):
+    if self.afterStrategy:
+      raise ValueError("Can't use this command after game started!")
+    if self.playerBoard.readyStart:
+      print("\n\n - - - - -  Game Starts! Good Luck! - - - - -\n\n")
+      self.shuffle('',self.computerBoard)
+      self.afterStrategy = True
+    else:
+      raise ValueError("You can start after all boats are added on the board.")
   
-  def shotBoat(self,command):
-    print("Shot boat")
-    pass
+  def shotBoat(self,command,*args):
+    if not self.afterStrategy:
+      raise ValueError("Can't use this command before game started!")
+    if len(command) != 3:
+      raise ValueError('Incorrect Command')
+    if not command[1].isdigit() or not command[2].isdigit():
+      raise ValueError("X and Y needs to be numbers.")
+    if int(command[1]) > 10 or int(command[2]) > 10 or int(command[1]) < 1 or int(command[2]) < 1:
+        raise ValueError('X and Y bigger than 10 or smaller than 1.')
+    boardUse = args[0]
+    if boardUse == self.computerBoard and self.turn != 'Player':
+      raise ValueError('Not your turn!')
+    square = (int(command[1]),int(command[2]))
+    if boardUse.checkShoot(square):
+      message = boardUse.boardShot(square)
+      print(f"{args[1]}: {message}")
+      self.changeTurn()
+      if self.turn == 'Computer':
+        self.start_time = time.time()
+        print("\n Computer turn! Waiting...")
+    else:
+      raise ValueError("Invalid Shot! Shot again!")
   
-  def showStats(self,command):
-    print("show Satts")
-    pass
+  def showStats(self,command,*args):
+    boardUse = args[0]
+    if len(command) != 2:
+      raise ValueError('Incorrect Command or Params!')
+    text = command[1].strip()
+    text = command[1].lower()
+    if text != 'player' and text != 'computer':
+      raise ValueError('Invalid Player! Type <player> or <computer>.')
+    if text == 'player':
+      boardUse = self.computerBoard
+    stats = boardUse.getStats()
+    print(f"\n= = = = Stats {text} = = = =")
+    print(f"Total Shots: {stats[0]}")
+    print(f"Boats Shots: {stats[1]}")
+    print(f"Water Shots: {stats[2]}")
+    print(f"Remaining Boats: {stats[3]}\n")
     
-  def exiting(self,command):
+  def exiting(self,command,*args):
     """Exiting function
     """
     print("Exiting game. Bye bye!")
@@ -135,45 +209,72 @@ class UI:
   
   #PRINT FUNCTIONS
   
-  def showCommands(self,command):
+  def showCommands(self,command,*args):
     print("\n- - - - - - - Commands - - - - - - - \n")
     print("commands | Show list with all commands")
-    print("show | Showing your board [WITH BOATS]")
+    print("show <player> | Showing your board [WITH BOATS]")
     print("add <boat> <x> <y> | Boats: Carrier - 5, Battleship - 4, Destroyer - 3, Submarine - 3, Patrol - 2")
     print("delete <boat> | Delete a boat from board.")
     print("rotate <boat> [ONLY IF BOAT ISN'T ADDED]| Boats: Carrier - 5, Battleship - 4, Destroyer - 3, Submarine - 3, Patrol - 2")
     print("shuffle | Generate random positions for boats")
     print("start [ONLY WHEN ALL BOATS ARE ON TABLE] | Generate random boats for computer and start the game!")
     print("shot <x> <y> | Add shot on computer Board.")
-    print("stats | Number of shots are on boats")
+    print("stats <player> | Statistics for player/computer")
     print("exit | Exiting game.")
     print("- - - - - - - - - - - - - - - - - - - -\n")
     
-  def printLogicBoard(self,boardUse:Board):
-    board = boardUse.getLogicBoard
-    for i in board:
-      if i != []:
-        string = ''
-        for j in board[i]:
-          string += f'| {board[i][j]} '
-        print(string)
     
   def inputCommand(self):
     commandInput = input("Type the command: ").strip()
     commandInput = commandInput.split(' ')
+    if commandInput[0] == 'winc':
+      self.playerBoard.setWinner()
+    elif commandInput[0] == 'winp':
+      self.computerBoard.setWinner()
     if commandInput[0] in self.commands.keys():
       try:
-        self.commands[commandInput[0]](commandInput)
+        if commandInput[0] == 'shot':
+          self.commands[commandInput[0]](commandInput,self.computerBoard,'Computer')
+        else:
+          self.commands[commandInput[0]](commandInput,self.playerBoard)
       except ValueError as e:
         print(e)
+    else:
+      raise ValueError('Invalid command! Type again!')
+        
+  def checkWinner(self):
+    if self.playerBoard.verifyWinner:
+      print("\n\n\n\n You Win! Computer Loose!\n\n\n\n")
+      self.isPlaying = False
+      quit()
+    elif self.computerBoard.verifyWinner:
+      print("\n\n\n\n You Loose! Computer Win!\n\n\n\n")
+      self.isPlaying = False
+      quit()
         
   def startGame(self):
     self.isPlaying = True
-    self.commands = {'commands':self.showCommands,'show':self.showBoard,'add':self.addBoat,'delete':self.deleteBoat,'rotate':self.rotateBoat,'shuffle':self.shuffle,'start':self.startGame,'shot':self.shotBoat,'stats':self.showStats,'exit':self.exiting}
+    self.commands = {'commands':self.showCommands,'show':self.showBoard,'add':self.addBoat,'delete':self.deleteBoat,'rotate':self.rotateBoat,'shuffle':self.shuffle,'start':self.startPlaying,'shot':self.shotBoat,'stats':self.showStats,'exit':self.exiting}
     self.boats = {'carrier':0,'battleship':1,'destroyer':2,'submarine':3,'patrol':4}
     self.showCommands('')
     self.addBoards()
     self.playerBoard.createBoats()
     self.computerBoard.createBoats()
     while self.isPlaying:
-      self.inputCommand()
+      self.checkWinner()
+      if self.turn == 'Computer':
+        self.endtime = time.time()
+        if self.endtime - self.start_time > 2:
+          shot = False
+          while not shot:
+            square = (random.randint(1,10),random.randint(1,10))
+            if self.playerBoard.checkShoot(square):
+              shot = True
+          commandShot = f'shot {square[0]} {square[1]}'
+          commandShot = commandShot.split(' ')
+          self.shotBoat(commandShot,self.playerBoard,'Player')
+      else:
+        try:
+          self.inputCommand()
+        except ValueError as e:
+          print(e)

@@ -114,13 +114,6 @@ class BoardLogic:
     for each in self.boardDomain.getBoats:
       if each.getName.lower() == name:
         return each
-            
-  def addShotsOnMap(self):
-    for i in range(1,BOARD_COL+1):
-      for z in range(1,BOARD_ROWS+1):
-        if self.boardDomain.getFromLogicalBoard(i,z) == 2:
-          x,y = self.boardDomain.getFromBoard(i,z,'x'),self.boardDomain.getFromBoard(i,z,'y')
-          self.uiInterface.blit(EXPLODEICON,(x+5,y+5))
           
   def getSquareForCoords(self,positiom):
     for i in range(1,BOARD_COL+1):
@@ -156,6 +149,9 @@ class BoardLogic:
   @property
   def verifyWinner(self):
     return self.boardDomain.getOneNeeded == self.boardDomain.getBoatShots
+
+  def setWinner(self):
+    self.boardDomain.boatShots = self.boardDomain.getOneNeeded
   
   def verifyPositionBoat(self,mousePos):
     for each in self.getBoats:
@@ -170,11 +166,17 @@ class BoardLogic:
       
   def spawnBoat(self,boat:Boat):
     square = (-1,-1)
-    positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
-    square = self.getSquareForCoords(positionRandom)
+    if self.boardDomain.getBoard != [[]]:
+      print("intr")
+      positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
+      square = self.getSquareForCoords(positionRandom)
+    else:
+      square = (random.randint(1,10),random.randint(1,10))
     if self.checkValability(boat,boat.align,square[0],square[1]):
       boat.setBoardSquare(square[0],square[1])
-      boat.position = self.getCoordsForSquare(square[0],square[1])
+      if self.boardDomain.getBoard != [[]]:
+        print("intr")
+        boat.position = self.getCoordsForSquare(square[0],square[1])
       self.verifyCoordsinSquare(boat)
       return True
     return False
@@ -188,3 +190,10 @@ class BoardLogic:
 
     coords = self.boardDomain.getCoordsForSquare(squarei,squarez)
     return self.boardShot(coords)
+  
+  def getStats(self):
+    boatShoted = self.boardDomain.getBoatShots
+    totalShots = self.boardDomain.getTotalShots
+    waterShots = totalShots - boatShoted
+    remainingBoats = self.boardDomain.getOneNeeded - boatShoted
+    return (totalShots,boatShoted,waterShots,remainingBoats)

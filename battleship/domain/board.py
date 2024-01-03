@@ -51,6 +51,12 @@ class Board:
   @property
   def getBoats(self):
     return self.boats
+  @property
+  def getBoard(self):
+    return self.board
+  @property
+  def getTotalShots(self):
+    return self.totalShots
   
   def setBoats(self,boats):
     self.boats = boats
