@@ -34,6 +34,7 @@ WINNERBACKGROUND = pygame.transform.scale(pygame.image.load('battleship\\utils\\
 SHUFFLE_BUTTON = pygame.transform.scale(pygame.image.load('battleship\\utils\\shuffle.png'),(50,50))
 OCEAN_STORM = pygame.transform.scale(pygame.image.load('battleship\\utils\\oceanStorm.jpg'),(WIDTH,HEIGHT))
 TEXTURE = pygame.transform.scale(pygame.image.load('battleship\\utils\\texture.jpg'),(300,500))
+
 #TEXTS
 COPYRIGHT = FONT.render('@copyright by Voda',True,COLOR_WHITE)
 STRATEGY_PANEL = BIG_FONT.render('STRATEGY PANEL',True,COLOR_WHITE)
@@ -56,12 +57,7 @@ BOAT_DESTROYER = 3
 BOAT_SUBMARINE = 3
 BOAT_PATROL = 2
 IMG_BOAT_CARRIER = pygame.image.load('battleship\\utils\\carrier.png')
-#pygame.transform.scale(IMG_BOAT_CARRIER,(SQUARE_SIZE,SQUARE_SIZE*BOAT_CARRIER))
 IMG_BOAT_BATTLESHIP = pygame.image.load('battleship\\utils\\battleship.png')
-#pygame.transform.scale(IMG_BOAT_BATTLESHIP,(SQUARE_SIZE,SQUARE_SIZE*BOAT_BATTLESHIP))
 IMG_BOAT_DESTROYER = pygame.image.load('battleship\\utils\\destroyer.png')
-#pygame.transform.scale(IMG_BOAT_DESTROYER,(SQUARE_SIZE,SQUARE_SIZE*BOAT_DESTROYER))
 IMG_BOAT_SUBMARINE = pygame.image.load('battleship\\utils\\submarine.png')
-#pygame.transform.scale(IMG_BOAT_SUBMARINE,(SQUARE_SIZE,SQUARE_SIZE*BOAT_SUBMARINE))
 IMG_BOAT_PATROL = pygame.image.load('battleship\\utils\\patrol.png')
-#pygame.transform.scale(IMG_BOAT_PATROL,(SQUARE_SIZE,SQUARE_SIZE*BOAT_PATROL))

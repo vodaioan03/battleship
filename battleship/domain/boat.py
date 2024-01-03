@@ -55,9 +55,21 @@ class Boat:
   @property
   def getPosition(self):
     return self.position
+  @property
+  def getAlign(self):
+    return self.align
+  @property
+  def getName(self):
+    return self.name
     
   def setBoardSquare(self,i,z):
     self.boardSquare = (i,z)
+    
+  def rotateAlign(self):
+    if self.getAlign == 'Vertical':
+      self.setAlign('Horizontal')
+    else:
+      self.setAlign('Vertical')
     
   def setBoatSquareSize(self,size):
     if self.width == SQUARE_SIZE or self.width == SQUARE_SIZE_MINI:

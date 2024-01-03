@@ -101,6 +101,20 @@ class BoardLogic:
         return f"ERROR: Shot {positiom[0],positiom[1]} is already added!"
       return message
             
+  def createBoats(self):
+    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_CARRIER)
+    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_BATTLESHIP)
+    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_DESTROYER)
+    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_SUBMARINE)
+    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_PATROL) 
+    
+    self.boardDomain.setBoats([self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol])          
+            
+  def getBoat(self,name):
+    for each in self.boardDomain.getBoats:
+      if each.getName.lower() == name:
+        return each
+            
   def addShotsOnMap(self):
     for i in range(1,BOARD_COL+1):
       for z in range(1,BOARD_ROWS+1):
@@ -129,6 +143,9 @@ class BoardLogic:
   @property
   def readyStart(self):
     return self.boardDomain.getOneNeeded == self.boardDomain.getOnes
+  @property
+  def getLogicBoard(self):
+    return self.boardDomain.getLogicBoard
   
   def getCoordsForSquare(self,i,z):
     return self.boardDomain.getCoordsForSquare(i,z)
@@ -139,6 +156,28 @@ class BoardLogic:
   @property
   def verifyWinner(self):
     return self.boardDomain.getOneNeeded == self.boardDomain.getBoatShots
+  
+  def verifyPositionBoat(self,mousePos):
+    for each in self.getBoats:
+      if each.position[1] <= mousePos[1] <= (each.position[1] + each.height) and each.position[0] <= mousePos[0] <= (each.position[0] + each.width):
+        return each
+    return None
+  
+  def boardReinit(self):
+    self.boardDomain.clearBoard()
+    for each in self.getBoats:
+      each.reInit()
+      
+  def spawnBoat(self,boat:Boat):
+    square = (-1,-1)
+    positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
+    square = self.getSquareForCoords(positionRandom)
+    if self.checkValability(boat,boat.align,square[0],square[1]):
+      boat.setBoardSquare(square[0],square[1])
+      boat.position = self.getCoordsForSquare(square[0],square[1])
+      self.verifyCoordsinSquare(boat)
+      return True
+    return False
   
   def sendShot(self):
     squarei = random.randint(1,BOARD_ROWS)

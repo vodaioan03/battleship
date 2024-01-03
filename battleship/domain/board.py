@@ -63,6 +63,9 @@ class Board:
   @property
   def getOneNeeded(self):
     return self.oneNeeded
+  @property
+  def getLogicBoard(self):
+    return self.logicBoard
   
   @property
   def getOnes(self):

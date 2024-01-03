@@ -8,7 +8,7 @@ from colorama import *
 class StartGame:
   
   def __init__(self,uiInterface, playerName:str) -> None:
-    self.uiInterface = uiInteface
+    self.uiInterface = uiInterface
     self.playerName = playerName
     self.uiInterface.playerName(playerName)
     
