@@ -62,6 +62,9 @@ class Boat:
   def getName(self):
     return self.name
   @property
+  def getSize(self):
+    return self.size
+  @property
   def getSunk(self):
     return self.shots == self.size
     

@@ -280,7 +280,7 @@ class UI:
           shot = False
           square = (0,0)
           while square == (0,0) or not self.playerBoard.checkShoot(square):
-            square = self.computerAI.getShot()
+            square = self.computerAI.getShot(self.playerBoard.getLogicBoard)
             if square == (0,0):
               break
           if square != (0,0):

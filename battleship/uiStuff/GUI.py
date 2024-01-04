@@ -210,14 +210,14 @@ class GUI:
         if self.endtime - self.start_time > 2:
           square = (0,0)
           while square == (0,0) or not self.playerBoard.checkShoot(square):
-            square = self.computerAI.getShot()
+            square = self.computerAI.getShot(self.playerBoard.getLogicBoard)
             if square == (0,0):
               break
           if square == (0,0):
             square = self.playerBoard.sendShot()
           boat = self.playerBoard.getBoat(square[0],square[1])
           self.message = self.playerBoard.boardShot(square)
-          if 'boat' in self.message:
+          if 'boat' in self.message or 'sunk' in self.message:
             if isinstance(boat, Boat):
               self.computerAI.addPosition(square)
               if boat.getSunk:
