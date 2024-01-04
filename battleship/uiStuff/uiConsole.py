@@ -1,5 +1,6 @@
 from logicalStuff.boardLogic import *
 from domain.boat import *
+from logicalStuff.AI import *
 from utils.constants import *
 
 import random
@@ -174,8 +175,16 @@ class UI:
       raise ValueError('Not your turn!')
     square = (int(command[1]),int(command[2]))
     if boardUse.checkShoot(square):
+      boat = boardUse.getBoat(square[0],square[1])
       message = boardUse.boardShot(square)
       print(f"{args[1]}: {message}")
+      if isinstance(boat, Boat):
+        if boardUse != self.computerAI.board:
+          self.computerAI.addPosition(square)
+        if boat.getSunk:
+          print(f"{boat.name} sunk!")
+          if boardUse != self.computerAI.board:
+            self.computerAI.deleteSunk(boat)
       self.changeTurn()
       if self.turn == 'Computer':
         self.start_time = time.time()
@@ -244,11 +253,11 @@ class UI:
         
   def checkWinner(self):
     if self.playerBoard.verifyWinner:
-      print("\n\n\n\n You Win! Computer Loose!\n\n\n\n")
+      print("\n\n\n\n You Loose! Computer Wins!\n\n\n\n")
       self.isPlaying = False
       quit()
     elif self.computerBoard.verifyWinner:
-      print("\n\n\n\n You Loose! Computer Win!\n\n\n\n")
+      print("\n\n\n\n You Win! Computer Loose!\n\n\n\n")
       self.isPlaying = False
       quit()
         
@@ -260,17 +269,28 @@ class UI:
     self.addBoards()
     self.playerBoard.createBoats()
     self.computerBoard.createBoats()
+    
+    self.computerAI = AI(self.computerBoard)
+  
     while self.isPlaying:
       self.checkWinner()
       if self.turn == 'Computer':
         self.endtime = time.time()
         if self.endtime - self.start_time > 2:
           shot = False
+          square = (0,0)
+          while square == (0,0) or not self.playerBoard.checkShoot(square):
+            square = self.computerAI.getShot()
+            if square == (0,0):
+              break
+          if square != (0,0):
+            shot = True
           while not shot:
             square = (random.randint(1,10),random.randint(1,10))
             if self.playerBoard.checkShoot(square):
               shot = True
           commandShot = f'shot {square[0]} {square[1]}'
+          print(f"COMMAND COMPUTER: {commandShot}")
           commandShot = commandShot.split(' ')
           self.shotBoat(commandShot,self.playerBoard,'Player')
       else:

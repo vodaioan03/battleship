@@ -92,11 +92,15 @@ class BoardLogic:
         if isinstance(boatInSquare,Boat):
           self.boardDomain.addBoatShots(1)
           boatInSquare.shots += 1
+          self.lastBoat = boatInSquare
           message += ' a boat!'
+          if boatInSquare.getSunk:
+            message = f'{boatInSquare.getName} sunk!'
         else:
           message += ' water!'
         self.boardDomain.setValueToLogicalBoard(positiom[0],positiom[1],2)
         self.boardDomain.addTotalShots(1)
+        self.lastShot = (positiom[0],positiom[1])
       else:
         return f"ERROR: Shot {positiom[0],positiom[1]} is already added!"
       return message
@@ -108,7 +112,7 @@ class BoardLogic:
     self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_SUBMARINE)
     self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_PATROL) 
     
-    self.boardDomain.setBoats([self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol])          
+    self.setBoats([self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol])          
             
   def getBoat(self,name):
     for each in self.boardDomain.getBoats:
@@ -136,6 +140,9 @@ class BoardLogic:
     if self.boardDomain.getFromLogicalBoard(positiom[0],positiom[1]) == 2:
       return False
     return True
+  
+  def getBoat(self,x,y):
+    return self.boardDomain.getFromLogicalBoard(x,y)
   @property
   def readyStart(self):
     return self.boardDomain.getOneNeeded == self.boardDomain.getOnes
@@ -188,9 +195,11 @@ class BoardLogic:
     while self.boardDomain.getFromLogicalBoard(squarei,squarez) == 2:
       squarei = random.randint(1,BOARD_ROWS)
       squarez = random.randint(1,BOARD_ROWS)
-
-    coords = self.boardDomain.getCoordsForSquare(squarei,squarez)
-    return self.boardShot(coords)
+    self.lastShot = (squarei,squarez)
+    return (squarei,squarez)
+  
+  def getLastShot(self):
+    return self.lastShot
   
   def getStats(self):
     boatShoted = self.boardDomain.getBoatShots

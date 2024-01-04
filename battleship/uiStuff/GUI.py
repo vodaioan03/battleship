@@ -3,6 +3,7 @@ import time
 import pygame
 pygame.init()
 from logicalStuff.boardLogic import *
+from logicalStuff.AI import *
 from domain.boat import *
 from utils.constants import *
 
@@ -197,6 +198,8 @@ class GUI:
         self.changeSquareSize(each,SQUARE_SIZE_MINI)
       for each in self.computerBoard.getBoats:
         self.changeSquareSize(each,SQUARE_SIZE_MINI)
+        
+      self.computerAI = AI(self.computerBoard)
     while self.isPlaying:
       self.uiInterface.fill(COLOR_BLACK)
       self.uiInterface.blit(OCEAN_STORM,(0,0))
@@ -205,7 +208,20 @@ class GUI:
         self.uiInterface.blit(self.message,(120+SQUARE_SIZE_MINI+40,600))
         self.endtime = time.time()
         if self.endtime - self.start_time > 2:
-          self.message = self.playerBoard.sendShot()
+          square = (0,0)
+          while square == (0,0) or not self.playerBoard.checkShoot(square):
+            square = self.computerAI.getShot()
+            if square == (0,0):
+              break
+          if square == (0,0):
+            square = self.playerBoard.sendShot()
+          boat = self.playerBoard.getBoat(square[0],square[1])
+          self.message = self.playerBoard.boardShot(square)
+          if 'boat' in self.message:
+            if isinstance(boat, Boat):
+              self.computerAI.addPosition(square)
+              if boat.getSunk:
+                self.computerAI.deleteSunk(boat)
           self.message = BIG_FONT.render(self.message,True,COLOR_WHITE)
           self.turn = 'Player'
       if self.turn == 'Player' and self.message != '':

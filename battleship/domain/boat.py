@@ -61,6 +61,9 @@ class Boat:
   @property
   def getName(self):
     return self.name
+  @property
+  def getSunk(self):
+    return self.shots == self.size
     
   def setBoardSquare(self,i,z):
     self.boardSquare = (i,z)
