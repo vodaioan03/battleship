@@ -13,37 +13,58 @@ class AI:
     self.boats = copy.copy(self.board.getBoats)
     self.aligns = [' ' for _ in range(len(self.boats))]
     self.positions = {} # {'':N- i-1,S- i+1,V- j-1,E- j+1}
-    print("AI")
     
   def deleteSunk(self,boat):
+    """Delete a boat what is sunk
+
+    Args:
+        boat (Boat): boat for delete
+    """
     for i in range(len(self.boats)):
       if self.boats[i] == boat:
         self.boats.remove(boat)
         break
-      
-  def showBoats(self):
-    print(self.boats)
     
   def addPosition(self,square):
+    """Add position to list
+
+    Args:
+        square (tuple): square position
+    """
     self.positions[f'{square[0]},{square[1]}'] = [(-1,0),(1,0),(0,-1),(0,1)]
-    print(self.positions)
+
     
   def deleteFromPosition(self,square,index):
+    """Delete from position
+
+    Args:
+        square (tuple): square position
+        index (int): index for delete
+    """
     self.positions[f'{square[0]},{square[1]}'][index] = (0,0)
     self.deletePosition(square)
     
     
     
   def deletePosition(self,square):
+    """Delete from position list
+
+    Args:
+        square (tuple): square position
+    """
     delete = True
     for each in self.positions[f'{square[0]},{square[1]}']:
       if each != (0,0):
         delete = False
     if delete == True:
-      print("delete")
       del self.positions[f'{square[0]},{square[1]}']
       
   def findTheLargestBoat(self):
+    """Find the smaller boat from list with active boats
+
+    Returns:
+        Boat: boat object
+    """
     maximum = 7
     boat = ''
     for each in self.boats:
@@ -53,6 +74,14 @@ class AI:
     return boat
       
   def getShot(self,logicBoard):
+    """Get position for shot with AI
+
+    Args:
+        logicBoard (list): logic board
+
+    Returns:
+        tuple: square position
+    """
     if len(self.positions) != 0:
       key = ''
       found = False
@@ -69,7 +98,6 @@ class AI:
               self.deleteFromPosition(square,i)
               shot = (square[0]+pos[0],square[1]+pos[1])
               if shot[0] > BOARD_ROWS or shot[0] < 1 or shot[1] > BOARD_COL or shot[1] < 1:
-                print(f"SHOT FAIL: {shot}")
                 continue
               else:
                 return shot
@@ -90,14 +118,11 @@ class AI:
             break
           i += add
           if logicBoard[i][j] != 2:
-            print(i,j)
             numberOfSquares += 1
           else:
-            print(i,j,' in else')
             add = boatSize-1
             numberOfSquares = 0
           if numberOfSquares == boatSize:
-            print(i-boatSize+1,j,' in coloana ##')
             ok = True
             for k in range(1,boatSize+1):
               if i-k >= 1:
@@ -117,14 +142,11 @@ class AI:
             break
           j += add
           if logicBoard[i][j] != 2:
-            print(i,j)
             numberOfSquares += 1
           else:
-            print(i,j,' in else')
             add = boatSize-1
             numberOfSquares = 0
           if numberOfSquares == boatSize:
-            print(i,j-boatSize+1,' in linie')
             ok = True
             for k in range(1,boatSize+1):
               if j-k >= 1:
