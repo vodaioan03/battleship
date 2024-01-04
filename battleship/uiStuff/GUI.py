@@ -215,7 +215,7 @@ class GUI:
               break
           if square == (0,0):
             square = self.playerBoard.sendShot()
-          boat = self.playerBoard.getBoat(square[0],square[1])
+          boat = self.playerBoard.getBoatForCoords(square[0],square[1])
           self.message = self.playerBoard.boardShot(square)
           if 'boat' in self.message or 'sunk' in self.message:
             if isinstance(boat, Boat):

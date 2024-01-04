@@ -2,6 +2,8 @@ from uiStuff.GUI import *
 from uiStuff.uiConsole import *
 import configparser
 from colorama import *
+import tests
+import unittest
   
 
   
@@ -25,6 +27,8 @@ if __name__ == "__main__":
   if not uiInterfaceChoosen.isdigit or playerName == '' or uiInterfaceChoosen not in uiOptions.keys():
     print(Fore.RED + "[ERROR] Failed to start Game. Please entry 1 or 2 at the gameinterface.ui and insert Player Name." + Style.RESET_ALL)
     quit()
+  test_suite = unittest.defaultTestLoader.loadTestsFromModule(tests)
+  test_result = unittest.TextTestRunner(verbosity=2).run(test_suite)
   uiInteface = uiOptions[uiInterfaceChoosen]()
   startGame = StartGame(uiInteface,playerName)
   startGame.playGame() # Start Game

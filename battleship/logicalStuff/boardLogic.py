@@ -175,6 +175,7 @@ class BoardLogic:
     for each in self.boardDomain.getBoats:
       if each.getName.lower() == name:
         return each
+    return None
   
   def getCoords(self,i,z):
     """Get coords for square
@@ -223,7 +224,7 @@ class BoardLogic:
       return False
     return True
   
-  def getBoat(self,x,y):
+  def getBoatForCoords(self,x,y):
     """Get boat for a coord
 
     Args:
