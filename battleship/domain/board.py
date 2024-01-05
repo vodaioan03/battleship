@@ -3,11 +3,10 @@ from domain.boat import *
 
 class Board:
   
-  def __init__(self,ui) -> None:
+  def __init__(self) -> None:
     self.logicBoard = [[0 for _ in range(BOARD_COL+1)] for _ in range(BOARD_ROWS+1)]
     self.logicBoard[0] = []
     self.board = [[]]
-    self.uiInterface = ui
     self.oneNeeded = BOAT_CARRIER + BOAT_BATTLESHIP + BOAT_DESTROYER + BOAT_PATROL + BOAT_SUBMARINE
     self.ones = 0
     self.totalShots = 0

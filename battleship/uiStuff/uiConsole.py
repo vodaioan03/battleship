@@ -29,8 +29,8 @@ class UI:
   #####################3FROM GUI ###################################
     
   def addBoards(self):
-    self.playerBoard = BoardLogic(self.uiInterface)
-    self.computerBoard = BoardLogic(self.uiInterface)
+    self.playerBoard = BoardLogic()
+    self.computerBoard = BoardLogic()
   
   def spawnRandomBoats(self, boardUse:Board,boats:list):
     boardUse.boardReinit()

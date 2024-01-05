@@ -9,8 +9,8 @@ import unittest
 class TestBoardFunctions(unittest.TestCase):
 
     def setUp(self):
-      self.computerBoard = BoardLogic('Console')
-      self.playerBoard = BoardLogic('Console')
+      self.computerBoard = BoardLogic()
+      self.playerBoard = BoardLogic()
       
     def test_clearBoard(self):
       self.computerBoard.boardReinit()
@@ -130,7 +130,7 @@ class TestBoardFunctions(unittest.TestCase):
 class TestBoatFunctions(unittest.TestCase):
     
     def setUp(self):
-      self.boat = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,'Console',self,IMG_BOAT_CARRIER)
+      self.boat = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self,IMG_BOAT_CARRIER)
       
     def test_setImg(self):
       self.boat.setImg('img')
@@ -192,8 +192,8 @@ class TestBoatFunctions(unittest.TestCase):
 class TestAI(unittest.TestCase):
     
     def setUp(self):
-      self.computerBoard = BoardLogic('Console')
-      self.playerBoard = BoardLogic('Console')
+      self.computerBoard = BoardLogic()
+      self.playerBoard = BoardLogic()
       self.computerBoard.createBoats()
       self.computerAI = AI(self.computerBoard)
       
@@ -229,8 +229,8 @@ class TestAI(unittest.TestCase):
 class TestBoardLogic(unittest.TestCase):
     
     def setUp(self):
-      self.computerBoard = BoardLogic('Console')
-      self.playerBoard = BoardLogic('Console')
+      self.computerBoard = BoardLogic()
+      self.playerBoard = BoardLogic()
       self.computerBoard.createBoats()
       self.playerBoard.createBoats()
     

@@ -22,8 +22,8 @@ class GUI:
     self.message = ''
     
   def addBoards(self):
-    self.playerBoard = BoardLogic(self.uiInterface)
-    self.computerBoard = BoardLogic(self.uiInterface)
+    self.playerBoard = BoardLogic()
+    self.computerBoard = BoardLogic()
     
   def playerName(self,playerName):
     self.playerName = playerName

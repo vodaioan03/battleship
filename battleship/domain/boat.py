@@ -3,13 +3,12 @@ from domain.board import *
 
 class Boat:
   
-  def __init__(self,name,size,x,y,color,ui,Board,img = '') -> None:
+  def __init__(self,name,size,x,y,color,Board,img = '') -> None:
     self.name = name
     self.size = size
     self.initialPosition = (x,y)
     self.position = (x,y)
     self.color = color
-    self.uiInterface = ui
     self.view = None
     self.align = 'Vertical'
     self.width = SQUARE_SIZE

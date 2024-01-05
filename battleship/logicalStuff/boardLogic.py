@@ -5,9 +5,8 @@ import random
 
 class BoardLogic:
   
-  def __init__(self,ui) -> None:
-    self.boardDomain = Board(ui)
-    self.uiInterface = ui
+  def __init__(self) -> None:
+    self.boardDomain = Board()
     
   def checkValability(self,boat,align,i,z):
     """Check valability for boat
@@ -155,11 +154,11 @@ class BoardLogic:
   def createBoats(self):
     """Create boats for user
     """
-    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_CARRIER)
-    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_BATTLESHIP)
-    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_DESTROYER)
-    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_SUBMARINE)
-    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,self.uiInterface,self,IMG_BOAT_PATROL) 
+    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self,IMG_BOAT_CARRIER)
+    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,COLOR_BLACK,self,IMG_BOAT_BATTLESHIP)
+    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,COLOR_BLACK,self,IMG_BOAT_DESTROYER)
+    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,self,IMG_BOAT_SUBMARINE)
+    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,self,IMG_BOAT_PATROL) 
     
     self.setBoats([self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol])          
             
