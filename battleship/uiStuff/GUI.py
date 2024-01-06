@@ -14,12 +14,17 @@ class GUI:
     self.inStrategy = False
     self.isPlaying = False
     self.inWinner = False
+    # Verify if mouse is pressed
     self.mouseDown = False
     self.rect = None
     self.turn = 'Player'
     self.winner = None
     self.debug = False
     self.message = ''
+    # Error message and timers for draw
+    self.errorMessage = ''
+    self.errorStart = 0
+    self.errorEnd = 0
     
   def addBoards(self):
     self.playerBoard = BoardLogic()
@@ -57,7 +62,7 @@ class GUI:
       else:
         boat.setImg(pygame.transform.rotate(boat.img, -90))
     else:
-      print("Boatt already added!")
+      self.addError("Boat already added!")
     
     
   #MAIN MENU 
@@ -96,6 +101,9 @@ class GUI:
     while self.inStrategy:
       self.uiInterface.fill(COLOR_BLACK)
       self.uiInterface.blit(OCEANBACKGROUND,(0,0))
+      
+      self.checkError()
+      
       for event in pygame.event.get():  
         if event.type == pygame.QUIT:  
           self.quitGame()
@@ -120,9 +128,12 @@ class GUI:
               self.spawnRandomBoats(self.playerBoard,self.playerBoard.getBoats)
             self.rect = self.playerBoard.verifyPositionBoat(mousePos)
             
+            # Take boat from board
             if self.rect != None:
               self.playerBoard.boatTaken(self.rect)
+              
             self.mouseDown = True
+          # Right click mouse for change align
           elif event.button == 3:
             self.rect = self.playerBoard.verifyPositionBoat(mousePos)
             if self.rect != None and self.rect.isAdded != True:
@@ -131,6 +142,7 @@ class GUI:
             else:
               self.rect = None
         if event.type == pygame.MOUSEBUTTONUP:
+          # Verify if you take boat and if you can make what do you wan't.
           if self.rect != None and self.mouseDown == True:
             boat = self.rect
             square = self.playerBoard.getSquareForCoords(mousePos)
@@ -145,6 +157,7 @@ class GUI:
                 boat.rotateAlign()
           self.mouseDown = False
           self.rect = None
+        # Mouse motion for boat
         if event.type == pygame.MOUSEMOTION and self.mouseDown and self.rect != None:
           self.rect.position = mousePos
             
@@ -155,10 +168,12 @@ class GUI:
       self.uiInterface.blit(STRATEGY_PANEL,(WIDTH/2-120,50))
       self.uiInterface.blit(SHUFFLE_BUTTON,(130,HEIGHT-120))
       
+      # Checks if all boats are added on the Board
       if self.playerBoard.readyStart:
         self.uiInterface.blit(PLAYBUTTON , (WIDTH/2-100,HEIGHT-80)) 
       pygame.display.update() # UPDATE GAME WINDOW
     
+  # Draw shots on Board
   def addShotsOnMap(self,boardUse:Board):
     for i in range(1,BOARD_COL+1):
       for z in range(1,BOARD_ROWS+1):
@@ -167,6 +182,7 @@ class GUI:
           x,y = coords[0],coords[1]
           self.uiInterface.blit(EXPLODEICON,(x+5,y+5))
   
+  # Draw Boat on the Board
   def draw(self,boardUse, boat:Boat):
     x = y = None
     boardSquare = boat.getBoardSquare
@@ -186,6 +202,7 @@ class GUI:
     boat.setBoatSquareSize(squareSize)
     boat.setImg(pygame.transform.scale(boat.getImg,(boat.getWidth,boat.getHeight)))
     
+  # Playing panel for 2 boards
   def playingPanel(self):
     if self.isPlaying:
       self.boardview(self.computerBoard)
@@ -200,10 +217,14 @@ class GUI:
         self.changeSquareSize(each,SQUARE_SIZE_MINI)
         
       self.computerAI = AI(self.computerBoard)
+      
+    
     while self.isPlaying:
       self.uiInterface.fill(COLOR_BLACK)
       self.uiInterface.blit(OCEAN_STORM,(0,0))
+      self.checkError()
       
+      # Generating shot for computer! I have 2 seconds delay from player shot.
       if self.turn == 'Computer':
         self.uiInterface.blit(self.message,(120+SQUARE_SIZE_MINI+40,600))
         self.endtime = time.time()
@@ -224,6 +245,7 @@ class GUI:
                 self.computerAI.deleteSunk(boat)
           self.message = BIG_FONT.render(self.message,True,COLOR_WHITE)
           self.turn = 'Player'
+      # Add message for hit!
       if self.turn == 'Player' and self.message != '':
         self.uiInterface.blit(self.message,(740+SQUARE_SIZE_MINI+40,600))
       
@@ -236,6 +258,7 @@ class GUI:
           if WIDTH-140 <= mousePos[0] <= WIDTH-12 and HEIGHT-80 <= mousePos[1] <= HEIGHT-16: 
             self.quitGame()
             break
+          # Player shot
           if self.turn == 'Player':
             if SQUARE_SIZE_MINI+80 <= mousePos[0] <= SQUARE_SIZE_MINI*(BOARD_ROWS+1)+80 and SQUARE_SIZE_MINI+150 <= mousePos[1] <= SQUARE_SIZE_MINI*(BOARD_COL+1)+150:
               if self.computerBoard.checkShoot(mousePos):
@@ -244,9 +267,10 @@ class GUI:
                 self.turn = 'Computer'
                 self.start_time = time.time()
               else:
-                print("Invalid Shot!")
+                self.addError('Invalid Shot!')
           else:
-            print("Isn't your turn.")
+            self.addError("Isn't your turn.")
+        # DEBUG MODE
         if event.type == pygame.KEYDOWN:
           if event.key == pygame.K_F1:
             self.debug = not self.debug
@@ -304,6 +328,21 @@ class GUI:
         self.uiInterface.blit(LOOSE,(450,150))
       
       pygame.display.update() #
+  
+  def addError(self,msg):
+    self.errorMessage = BIG_FONT.render(msg,True,COLOR_RED)
+    self.errorStart = time.time()
+    
+  def checkError(self):
+    if self.errorMessage != '':
+      self.errorEnd = time.time()
+      if self.errorEnd -self.errorStart <= 3:
+        self.drawErrorText()
+      else:
+        self.errorMessage = ''
+  
+  def drawErrorText(self):
+    self.uiInterface.blit(self.errorMessage,(530,40))
     
   def create_board(self):
     self.boardview(self.playerBoard)
@@ -337,6 +376,7 @@ class GUI:
   
   
   def boardview(self,boardUse:Board):
+    # Draw board for strategy
     boardUse.emptyBoard
     for i in range(1,BOARD_COL+1):
       boardUse.addToBoard([[]])
@@ -346,6 +386,7 @@ class GUI:
     pygame.draw.rect(self.uiInterface,(0,0,0),[SQUARE_SIZE+340,SQUARE_SIZE+40,BOARD_COL*SQUARE_SIZE,BOARD_ROWS*SQUARE_SIZE],1)
     
   def boardPlaying(self,boardUse:Board,xAdd,yAdd,text): 
+    # Draw board for playing panel
     boardUse.setSquareSize(SQUARE_SIZE_MINI)
     self.uiInterface.blit(text,(xAdd+SQUARE_SIZE_MINI+40,yAdd))
     boardUse.emptyBoard

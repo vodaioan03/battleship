@@ -25,6 +25,7 @@ class BoardLogic:
     if align == 'Vertical':
       if i+boat.size-1 >= BOARD_COL+1:
         return False
+      # Check if all squares for boat are free
       for k in range(0,boat.size):
         if self.boardDomain.getFromLogicalBoard(i+k,z) != 0:
           return False
@@ -32,6 +33,7 @@ class BoardLogic:
       if z+boat.size-1 >= BOARD_ROWS+1:
         return False
       for k in range(0,boat.size):
+        # Check if all squares for boat are free
         if self.boardDomain.getFromLogicalBoard(i,z+k) != 0:
           return False
     else:
@@ -77,11 +79,13 @@ class BoardLogic:
     """
     error = False
     i,z = boat.boardSquare[0],boat.boardSquare[1]
+    #Verify if we can add boat to the Board
     error = self.checkValability(boat,boat.align,i,z)
     error = not error
     if self.boardDomain.getFromLogicalBoard(i,z) == 0 and error == False:
       if boat.align == 'Vertical' and i+boat.size-1 < BOARD_COL+1:
         boat.setBoardSquare(i,z)
+        # Setting boat squares on Logical Board
         for k in range(0,boat.size):
           self.boardDomain.setValueToLogicalBoard(i+k,z, boat)
           self.boardDomain.addOnes
@@ -93,10 +97,12 @@ class BoardLogic:
           self.boardDomain.addOnes
         boat.isAdded = True
       else:
+        # Reinit boat because he can't fit to that position
         boat.position = boat.initialPosition
         boat.isAdded = False
         boat.setBoardSquare(-1,-1)
     else:
+      # Reinit the boat
       boat.position = boat.initialPosition
       boat.isAdded = False
       boat.setBoardSquare(-1,-1)
@@ -107,7 +113,9 @@ class BoardLogic:
     Args:
         boat (Boat): boat
     """
+    # Checks if boat are added
     if self.boardDomain.getFromLogicalBoard(boat.boardSquare[0],boat.boardSquare[1]) != 0:
+      # Set  all squares for boat to 0 because we take the boat
       if boat.align == 'Vertical':
         for k in range(0,boat.size):
           self.boardDomain.setValueToLogicalBoard(boat.boardSquare[0]+k,boat.boardSquare[1],0)
@@ -133,32 +141,35 @@ class BoardLogic:
     if position[0] > 10 or position[1] > 10:
       position = self.getSquareForCoords(position)
     if position != (-1,-1):
+      # Getting if shot is boat or not
       boatInSquare = self.boardDomain.getFromLogicalBoard(position[0],position[1])
       if boatInSquare != 2:
         if isinstance(boatInSquare,Boat):
           self.boardDomain.addBoatShots(1)
           boatInSquare.shots += 1
           self.lastBoat = boatInSquare
-          message += ' a boat!'
+          message += ' boat!'
           if boatInSquare.getSunk:
             message = f'{boatInSquare.getName} sunk!'
         else:
           message += ' water!'
+        # Add shot to logical board
         self.boardDomain.setValueToLogicalBoard(position[0],position[1],2)
         self.boardDomain.addTotalShots(1)
         self.lastShot = (position[0],position[1])
       else:
         return f"ERROR: Shot {position[0],position[1]} is already added!"
       return message
+    return ''
             
   def createBoats(self):
     """Create boats for user
     """
-    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self,IMG_BOAT_CARRIER)
-    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,COLOR_BLACK,self,IMG_BOAT_BATTLESHIP)
-    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,COLOR_BLACK,self,IMG_BOAT_DESTROYER)
-    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,self,IMG_BOAT_SUBMARINE)
-    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,self,IMG_BOAT_PATROL) 
+    self.boatCarrier = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,IMG_BOAT_CARRIER)
+    self.boatBattleship = Boat('Battleship',BOAT_BATTLESHIP,80,105,COLOR_BLACK,IMG_BOAT_BATTLESHIP)
+    self.boatDestroyer = Boat('Destroyer',BOAT_DESTROYER,170,105,COLOR_BLACK,IMG_BOAT_DESTROYER)
+    self.boatSubmarine = Boat('Submarine',BOAT_SUBMARINE,100,375,COLOR_BLACK,IMG_BOAT_SUBMARINE)
+    self.boatPatrol = Boat('Patrol',BOAT_PATROL,170,375,COLOR_BLACK,IMG_BOAT_PATROL) 
     
     self.setBoats([self.boatCarrier,self.boatBattleship,self.boatDestroyer,self.boatSubmarine,self.boatPatrol])          
             
@@ -307,7 +318,7 @@ class BoardLogic:
       each.reInit()
       
   def spawnBoat(self,boat:Boat):
-    """Spawn boat random
+    """Spawn boat random for shuffle and bot
 
     Args:
         boat (Boat): boat for spawn
@@ -317,10 +328,12 @@ class BoardLogic:
     """
     square = (-1,-1)
     if self.boardDomain.getBoard != [[]]:
+      # Get random coords for boat
       positionRandom = (random.randint(SQUARE_SIZE+340,SQUARE_SIZE*10+340), random.randint(SQUARE_SIZE+40,SQUARE_SIZE*10+40))
       square = self.getSquareForCoords(positionRandom)
     else:
       square = (random.randint(1,10),random.randint(1,10))
+    # Verify if boat fits on that position
     if self.checkValability(boat,boat.align,square[0],square[1]):
       boat.setBoardSquare(square[0],square[1])
       if self.boardDomain.getBoard != [[]]:

@@ -4,17 +4,27 @@ from domain.boat import *
 class Board:
   
   def __init__(self) -> None:
+    # Used for shot/boat and search if is empty or not. 2 - Shot, Boat - where position boat is, 0 - clear space
     self.logicBoard = [[0 for _ in range(BOARD_COL+1)] for _ in range(BOARD_ROWS+1)]
     self.logicBoard[0] = []
+    # Board - used for board draw and for boats (Used for getting square for coordonates)
     self.board = [[]]
+    # Used for search if all boats are added!
     self.oneNeeded = BOAT_CARRIER + BOAT_BATTLESHIP + BOAT_DESTROYER + BOAT_PATROL + BOAT_SUBMARINE
+    # How many squares have boats( If Carrier have 5 squares, then self.ones = 5)
     self.ones = 0
+    # Shots on board
     self.totalShots = 0
+    # How many squares with boats are shoted
     self.boatShots = 0
+    # Square size (SQUARE_SIZE - for strategy panel, SQUARE_SIZE_MINI - for playing panel)
     self.squareSize = SQUARE_SIZE
+    # All boats
     self.boats = []
     
   def clearBoard(self):
+    """Clear all data for board.
+    """
     self.logicBoard = [[0 for _ in range(BOARD_COL+1)] for _ in range(BOARD_ROWS+1)]
     self.logicBoard[0] = []
     self.board = [[]]

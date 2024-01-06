@@ -3,19 +3,22 @@ from domain.board import *
 
 class Boat:
   
-  def __init__(self,name,size,x,y,color,Board,img = '') -> None:
+  def __init__(self,name,size,x,y,color,img = '') -> None:
     self.name = name
     self.size = size
+    # Saving position for reinit boat, if boat can't be added, then he goes on initial spot
     self.initialPosition = (x,y)
+    # Actual position for boat(Helps for drawing on the board)
     self.position = (x,y)
     self.color = color
+    # View - draw a little square for interract  with mouse.
     self.view = None
     self.align = 'Vertical'
     self.width = SQUARE_SIZE
     self.height = self.size * self.width
+    # Helping for changing align!
     self.isAdded = False
     self.boardSquare = (-1,-1)
-    self.board = Board
     self.shots = 0
     self.img = img
       

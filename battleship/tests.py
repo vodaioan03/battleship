@@ -130,7 +130,7 @@ class TestBoardFunctions(unittest.TestCase):
 class TestBoatFunctions(unittest.TestCase):
     
     def setUp(self):
-      self.boat = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,self,IMG_BOAT_CARRIER)
+      self.boat = Boat('Carrier',BOAT_CARRIER,10,105,COLOR_BLACK,IMG_BOAT_CARRIER)
       
     def test_setImg(self):
       self.boat.setImg('img')
