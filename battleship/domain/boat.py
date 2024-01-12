@@ -168,7 +168,7 @@ class Boat:
       self.width = self.height * self.size
       
   def __str__(self) -> str:
-    return f"{self.name} | {self.position} | {self.boardSquare} | {self.view}"
+    return f"{self.name[0]}"
       
   def __repr__(self) -> str:
     return self.__str__()

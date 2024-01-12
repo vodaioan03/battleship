@@ -274,6 +274,10 @@ class BoardLogic:
     """
     return self.boardDomain.getCoordsForSquare(i,z)
   
+  @property
+  def getBoardDomain(self):
+    return self.boardDomain
+  
   def setSquareSize(self,size):
     """Set square size
 

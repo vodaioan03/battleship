@@ -3,6 +3,7 @@ from domain.boat import *
 from logicalStuff.AI import *
 from utils.constants import *
 from uiStuff.errors import *
+from texttable import Texttable
 
 import random
 import time
@@ -67,18 +68,11 @@ class UI:
     boardUse = self.playerBoard
     if command[1] == 'computer':
       boardUse = self.computerBoard
-    board = boardUse.getLogicBoard
-    for i in board:
-      if i != []:
-        string = ''
-        for j in range(1,len(i)):
-          if isinstance(i[j],Boat):
-            string += f'| {i[j].getName[0]} '
-          elif i[j] == 2:
-            string += f"| X "
-          else:
-            string += f'| {i[j]} '
-        print(string)
+    board = boardUse.getBoardDomain
+    if command[1] == 'player':
+      print(board)
+    else:
+      print(board.printOnlyShots())
   
   def addBoat(self,command,*args):
     if self.afterStrategy:

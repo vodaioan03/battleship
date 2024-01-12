@@ -1,5 +1,6 @@
 from utils.constants import *
 from domain.boat import *
+from texttable import Texttable
 
 class Board:
   
@@ -80,6 +81,41 @@ class Board:
       return self.board[i][j].x
     if elem == 'y':
       return self.board[i][j].y
+    
+  def __str__(self):
+    t = Texttable()
+    
+    hrow = ['/']
+    
+    for i in range(BOARD_COL):
+      hrow.append(i+1)
+    t.header(hrow)
+    
+    for i in range(1,BOARD_ROWS+1):
+      t.add_row([i] + self.logicBoard[i][1:])
+    return t.draw()
+  
+  def printOnlyShots(self):
+    t = Texttable()
+    
+    hrow = ['/']
+    
+    for i in range(BOARD_COL):
+      hrow.append(i+1)
+    t.header(hrow)
+    
+    for i in range(1,BOARD_ROWS+1):
+      string = [i]
+      for each in self.logicBoard[i][1:]:
+        if each == 2:
+          string.append('X')
+        else:
+          string.append(0)
+      t.add_row(string)
+    return t.draw()
+  
+  def __repr__(self) -> str:
+    return self.__str__()
     
   @property
   def getSquareSize(self):
@@ -219,3 +255,6 @@ class Board:
       self.boatShots += value
     else:
       self.boatShots += 1
+      
+      
+  
