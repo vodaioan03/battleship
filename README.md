@@ -1,35 +1,55 @@
-# Battleship Game
+![image](https://github.com/vodaioan03/battleship-minigame/assets/83557961/c9988893-6aeb-4632-b07a-3c350053126f)# Battleship Game
 
-## Descriere
+## Description
 
-Battleship Game este o implementare virtuală a jocului de strategie navală "Battleship". Jucătorul are o flotă formată din cinci nave de dimensiuni diferite și își propune să le plaseze strategic pe o tablă pentru a le ascunde de adversar și a încerca să le identifice și să le distrugă navele. Jocul include un mic motor de inteligență artificială (AI) pentru a furniza o experiență de joc captivantă și provocatoare.
+Battleship Game is a virtual implementation of the "Battleship" naval strategy game. The player has a fleet consisting of five ships of different sizes and aims to strategically place them on a board to hide them from the opponent and attempt to identify and destroy their ships. The game includes a small artificial intelligence (AI) engine to provide an engaging and challenging gaming experience.
 
-## Caracteristici
+## Features
 
-- **Cinci Nave Diferite:** Jocul include cinci tipuri diferite de nave, fiecare cu dimensiuni și forme unice, adăugând diversitate și strategie la experiența de joc.
+- **Five Different Ships:** The game features five different types of ships, each with unique sizes and shapes, adding diversity and strategy to the gaming experience.
 
-- **Inteligență Artificială:** O componentă de AI adăugată pentru a oferi un adversar computațional capabil de a face mișcări strategice și de a îmbunătăți nivelul de dificultate al jocului.
+- **Artificial Intelligence:** An AI component added to provide a computational opponent capable of making strategic moves and enhancing the game's difficulty level.
 
-- **Debug Mode:** Jocul include un mod de depanare accesibil prin apăsarea tastei F1, permițând dezvoltatorilor să monitorizeze și să testeze funcționalitatea jocului într-un mediu de testare controlat.
+- **Debug Mode:** The game includes a debugging mode accessible by pressing the `F1` key, allowing developers to monitor and test the game's functionality in a controlled testing environment.
 
-- **Verificări Robuste:** Implementare solidă și verificări riguroase pentru a asigura o funcționare fără probleme. Jocul este optimizat pentru o experiență de utilizator fluidă.
+- **Robust Checks:** Solid implementation and rigorous checks to ensure smooth operation. The game is optimized for a fluid user experience.
 
-## Cum să Rulezi Jocul
+- **Shuffle Boats:** This functionality randomly positions the boats on the game board.
 
-1. **Descarcă sau Clonează:** Descarcă sau clonează acest depozit pe mașina ta locală.
+## How to Run the Game
 
-2. **Instalează Dependințele:** Asigură-te că ai toate dependințele instalate. Poți face acest lucru utilizând comanda `npm install` sau `pip install`, în funcție de limbajul de programare folosit.
+1. **Download or Clone:** Download or clone this repository to your local machine.
 
-3. **Rulează Jocul:** Porniți jocul utilizând comanda `npm start` sau `python main.py`, în funcție de structura proiectului.
+2. **Install Dependencies:** Make sure you have all dependencies installed to run Python.
 
-4. **Debug Mode:** Dacă dorești să activezi modul de depanare, apasă tasta `F1` în timpul jocului.
+3. **Run the Game:** Start the game by running `start.py`.
 
-## Cum să Adaugi o Imagine de pe Imgur
+4. **Debug Mode:** If you want to activate debug mode, press the `F1` key during the game.
 
-Pentru a adăuga o imagine de pe Imgur în README-ul tău, urmează acești pași:
 
-1. Deschide imaginea pe Imgur.
-2. Clic dreapta pe imagine și selectează "Copy Image Address" sau "Copy Image Link".
-3. În README, folosește sintaxa markdown pentru a adăuga imaginea:
-
+**START GAME**
 ![Start](https://i.imgur.com/Y8WBV4L.png)
+
+**BOARD STRATEGY**
+![STRAREGY](https://i.imgur.com/haMCJff.png)
+
+**SHUFFLE BOATS**
+![SHUFFLE](https://i.imgur.com/Za3uvTO.png)
+
+**INVALID SHOT**
+![INVALID](https://i.imgur.com/RZaQwrh.png)
+
+**HIT WATER**
+![HIT](https://i.imgur.com/eIsT4Zk.png)
+
+**SUNK BOAT**
+![SUNK](https://i.imgur.com/pBZZZ0H.png)
+
+**DEBUG MODE**
+![DEBUG](https://i.imgur.com/6JHmoHF.png)
+
+**WIN GAME**
+![WIN](https://i.imgur.com/e58iI2z.png)
+
+**LOOSE GAME**
+![LOOSE](https://i.imgur.com/cVoezhP.png)
