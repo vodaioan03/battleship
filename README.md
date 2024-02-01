@@ -26,6 +26,9 @@ Battleship Game is a virtual implementation of the "Battleship" naval strategy g
 
 4. **Debug Mode:** If you want to activate debug mode, press the `F1` key during the game.
 
+5. **Two Interface:**: You can play with GUI or UI based game. You cand change this in the 'settings.properties'.
+
+
 
 **START GAME**
 ![Start](https://i.imgur.com/Y8WBV4L.png)
@@ -53,3 +56,5 @@ Battleship Game is a virtual implementation of the "Battleship" naval strategy g
 
 **LOOSE GAME**
 ![LOOSE](https://i.imgur.com/cVoezhP.png)
+
+**I used Python and PyGame for develop this game.**
