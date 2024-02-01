@@ -1,26 +1,36 @@
-🎮 Assignment 10 - Let's play
-Requirements
-You will be given one of the problems below to solve
-Use object oriented programming and layered architecture
-All modules with the exception of the UI will have specifications and PyUnit test cases
-The program will be implemented as a human player vs. computer player game
-The program must protect itself against the user’s invalid input
-NB! We do not expect you to implement optimal play for the computer player. However, it should still employ a strategy when making its moves in order to attempt to win the game and provide an entertaining opponent for the human player. Minimally, the computer player should move to win the game whenever possible and should block the human player’s attempts at 1-move victory, whenever possible
+# Battleship Game
 
-deadline is week 14
+## Descriere
 
-GUI Bonus (0.2P)
-In addition to the console-based user interface required, also implement a graphical user interface (GUI) for the program
-To receive the bonus, both user interfaces (menu-based and graphical) must use the same program layers. You have to be able to start the application with either user interface
-AI Bonus (0.2P)
-Implement computer AI using a minimax algorithm. Computer play should be competitive against the human player
-In the case where minimax cannot be applied (e.g. Battleship, which is not a complete information game), find a suitable alternative; talk to your lab professor about the bonus possibility in this case
-Best-of-FP Bonus (0.2P)
-This bonus will be awarded to the very best implementations. To receive it, you need to implement both the GUI and AI bonuses, follow all implementation requirements, and have your work be selected by the laboratory professor
-These implementations will be part of a separate GitHub repository that we aim to make publicly accessible in order to feature some of our students' best work during this semester
+Battleship Game este o implementare virtuală a jocului de strategie navală "Battleship". Jucătorul are o flotă formată din cinci nave de dimensiuni diferite și își propune să le plaseze strategic pe o tablă pentru a le ascunde de adversar și a încerca să le identifice și să le distrugă navele. Jocul include un mic motor de inteligență artificială (AI) pentru a furniza o experiență de joc captivantă și provocatoare.
 
-Problem Statement
-Battleship
-The game is described here
-https://en.wikipedia.org/wiki/Battleship_(game)
+## Caracteristici
 
+- **Cinci Nave Diferite:** Jocul include cinci tipuri diferite de nave, fiecare cu dimensiuni și forme unice, adăugând diversitate și strategie la experiența de joc.
+
+- **Inteligență Artificială:** O componentă de AI adăugată pentru a oferi un adversar computațional capabil de a face mișcări strategice și de a îmbunătăți nivelul de dificultate al jocului.
+
+- **Debug Mode:** Jocul include un mod de depanare accesibil prin apăsarea tastei F1, permițând dezvoltatorilor să monitorizeze și să testeze funcționalitatea jocului într-un mediu de testare controlat.
+
+- **Verificări Robuste:** Implementare solidă și verificări riguroase pentru a asigura o funcționare fără probleme. Jocul este optimizat pentru o experiență de utilizator fluidă.
+
+## Cum să Rulezi Jocul
+
+1. **Descarcă sau Clonează:** Descarcă sau clonează acest depozit pe mașina ta locală.
+
+2. **Instalează Dependințele:** Asigură-te că ai toate dependințele instalate. Poți face acest lucru utilizând comanda `npm install` sau `pip install`, în funcție de limbajul de programare folosit.
+
+3. **Rulează Jocul:** Porniți jocul utilizând comanda `npm start` sau `python main.py`, în funcție de structura proiectului.
+
+4. **Debug Mode:** Dacă dorești să activezi modul de depanare, apasă tasta `F1` în timpul jocului.
+
+## Cum să Adaugi o Imagine de pe Imgur
+
+Pentru a adăuga o imagine de pe Imgur în README-ul tău, urmează acești pași:
+
+1. Deschide imaginea pe Imgur.
+2. Clic dreapta pe imagine și selectează "Copy Image Address" sau "Copy Image Link".
+3. În README, folosește sintaxa markdown pentru a adăuga imaginea:
+
+   ```markdown
+   ![Start]([adresa_imagine](https://imgur.com/undefined)https://imgur.com/undefined)
