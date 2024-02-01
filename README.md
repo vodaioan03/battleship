@@ -32,4 +32,4 @@ Pentru a adăuga o imagine de pe Imgur în README-ul tău, urmează acești paș
 2. Clic dreapta pe imagine și selectează "Copy Image Address" sau "Copy Image Link".
 3. În README, folosește sintaxa markdown pentru a adăuga imaginea:
 
-![Start]([adresa_imagine](https://imgur.com/Y8WBV4L)
+![Start](https://i.imgur.com/Y8WBV4L.png)
