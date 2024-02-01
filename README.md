@@ -1,4 +1,4 @@
-![image](https://github.com/vodaioan03/battleship-minigame/assets/83557961/c9988893-6aeb-4632-b07a-3c350053126f)# Battleship Game
+# **Battleship Game**
 
 ## Description
 
